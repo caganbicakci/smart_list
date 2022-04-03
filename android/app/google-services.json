@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "739474162094",
+    "firebase_url": "https://smartlist-f961b-default-rtdb.firebaseio.com",
+    "project_id": "smartlist-f961b",
+    "storage_bucket": "smartlist-f961b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739474162094:android:468f4c2ac92bc47092c83f",
+        "android_client_info": {
+          "package_name": "com.caganbicakci.smart_list"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "739474162094-6eu7kcmloqam0mpdtmdnpbmoabvmh4nf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD45DM_VUVVZTGADu2lhkxV5t3AdX801e8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "739474162094-6eu7kcmloqam0mpdtmdnpbmoabvmh4nf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
