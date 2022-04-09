@@ -1,115 +1,231 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:smart_list/bloc/product_bloc/product_bloc.dart';
+import 'package:smart_list/data/repository/product_repositroy.dart';
+import 'package:smart_list/router/app_router.dart';
+import 'package:smart_list/screens/about_us_page.dart';
+import 'package:smart_list/screens/home_page.dart';
+import 'package:smart_list/screens/previous_purchase_page.dart';
+import 'bloc/cart_bloc/cart_bloc.dart';
+import 'constants/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+import 'data/repository/cart_repository.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final AppRouter _appRouter = AppRouter();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  late User user;
+
+  @override
+  initState() {
+    if (auth.currentUser != null) {
+      user = auth.currentUser!;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductBloc(ProductRepository()),
+        ),
+        BlocProvider(
+          create: (context) => CartBloc(CartRepository()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Smart List',
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        onGenerateRoute: _appRouter.onGenerateRoute,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainNavBar extends StatefulWidget {
+  const MainNavBar({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _MainNavBarState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MainNavBarState extends State {
+  var padding = const EdgeInsets.symmetric(horizontal: 18, vertical: 5);
+  double gap = 10;
+  int _selectedIndex = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final List<Widget> pageList = [
+    const HomePage(),
+    PreviousPurchasePage(),
+    AboutUsPage()
+  ];
+
+  List<Color> colors = [
+    Colors.deepPurple,
+    Colors.teal,
+    Colors.pink,
+  ];
+
+  List<Text> texts = const [
+    Text('Home'),
+    Text('Past Purchases'),
+    Text('About Us'),
+  ];
+
+  PageController controller = PageController();
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  var fabColor;
+
+  void signOut() async {
+    await auth.signOut();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login_page', (Route<dynamic> route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text(
+          "Smart List",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Constants.themeColor,
+        centerTitle: true,
+        actions: [
+          MaterialButton(
+              onPressed: () {
+                showDialog(
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Attention!"),
+                        content: const Text('Sign out from Smart List?'),
+                        actions: [
+                          TextButton(
+                            child: const Text("No"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text("Yes"),
+                            onPressed: () {
+                              signOut();
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/login_page');
+                            },
+                          ),
+                        ],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      );
+                    },
+                    context: context);
+              },
+              child: const Icon(
+                Icons.logout,
+                color: Colors.white,
+                size: 20,
+              )),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      floatingActionButton: buildFloatingActionButton(context),
+      body: PageView.builder(
+          itemCount: colors.length,
+          controller: controller,
+          onPageChanged: (page) {
+            setState(() {
+              _selectedIndex = page;
+            });
+          },
+          itemBuilder: (context, position) {
+            fabColor = colors[position];
+            return pageList[position];
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 45,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: -10,
+                  blurRadius: 60,
+                  color: Colors.black.withOpacity(0.4),
+                  offset: const Offset(0, 25),
+                )
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: GNav(
+              curve: Curves.fastOutSlowIn,
+              duration: const Duration(milliseconds: 500),
+              tabs: [
+                buildGButton("Home", LineIcons.home, Colors.deepPurple),
+                buildGButton("PastPurchases", LineIcons.heart, Colors.teal),
+                buildGButton("About Us", LineIcons.infoCircle, Colors.pink),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+                controller.jumpToPage(index);
+              },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  GButton buildGButton(String text, IconData icon, Color color) {
+    return GButton(
+      gap: gap,
+      padding: padding,
+      icon: icon,
+      iconColor: Colors.black,
+      iconActiveColor: color,
+      text: text,
+      textColor: color,
+      backgroundColor: color.withOpacity(0.2),
+      iconSize: 24,
+    );
+  }
+
+  buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      child: const Icon(Icons.list_alt),
+      backgroundColor: fabColor,
+      onPressed: () {
+        Navigator.pushNamed(context, '/cart');
+      },
     );
   }
 }
