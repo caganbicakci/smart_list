@@ -10,9 +10,10 @@ import 'package:smart_list/screens/about_us_page.dart';
 import 'package:smart_list/screens/home_page.dart';
 import 'package:smart_list/screens/previous_purchase_page.dart';
 import 'bloc/cart_bloc/cart_bloc.dart';
-import 'constants/constants.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
+import 'constants/theme_constants.dart';
 import 'data/repository/cart_repository.dart';
 
 void main() async {
@@ -76,8 +77,8 @@ class _MainNavBarState extends State {
 
   final List<Widget> pageList = [
     const HomePage(),
-    PreviousPurchasePage(),
-    AboutUsPage()
+    const PreviousPurchasePage(),
+    const AboutUsPage()
   ];
 
   List<Color> colors = [
@@ -110,40 +111,13 @@ class _MainNavBarState extends State {
       appBar: AppBar(
         title: const Text(
           "Smart List",
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Constants.themeColor,
+        backgroundColor: ThemeConstants.themeColor,
         centerTitle: true,
         actions: [
           MaterialButton(
               onPressed: () {
-                showDialog(
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Attention!"),
-                        content: const Text('Sign out from Smart List?'),
-                        actions: [
-                          TextButton(
-                            child: const Text("No"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          TextButton(
-                            child: const Text("Yes"),
-                            onPressed: () {
-                              signOut();
-                              Navigator.of(context)
-                                  .pushReplacementNamed('/login_page');
-                            },
-                          ),
-                        ],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      );
-                    },
-                    context: context);
+                showLogoutDialog(context);
               },
               child: const Icon(
                 Icons.logout,
@@ -203,6 +177,35 @@ class _MainNavBarState extends State {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showLogoutDialog(BuildContext context) {
+    return showDialog(
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Attention!"),
+            content: const Text('Sign out from Smart List?'),
+            actions: [
+              TextButton(
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: const Text("Yes"),
+                onPressed: () {
+                  signOut();
+                  Navigator.of(context).pushReplacementNamed('/login_page');
+                },
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          );
+        },
+        context: context);
   }
 
   GButton buildGButton(String text, IconData icon, Color color) {

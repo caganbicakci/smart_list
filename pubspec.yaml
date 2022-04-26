@@ -9,24 +9,25 @@ environment:
   sdk: ">=2.16.2 <3.0.0"
 dependencies:
   charts_flutter: ^0.11.0
-  cloud_firestore:
+  cloud_firestore: null
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
-  expansion_tile_card:
-  firebase_auth: 
-  firebase_core:
-  firebase_database:
+  expansion_tile_card: null
+  firebase_auth: null
+  firebase_core: null
+  firebase_database: null
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
-  google_fonts:
-  google_nav_bar:
-  http:
-  line_icons:
-  path:
-  provider:
-  syncfusion_flutter_charts:
-  url_launcher:
+  google_fonts: null
+  google_nav_bar: null
+  http: null
+  line_icons: null
+  lottie: ^1.3.0
+  path: null
+  provider: null
+  syncfusion_flutter_charts: null
+  url_launcher: null
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -48,3 +49,5 @@ flutter:
     - assets/logos/google_logo.png
     - assets/logos/facebook_logo.png
     - assets/logos/smart_list_logo.png
+
+    - assets/lottie/empty-cart.json

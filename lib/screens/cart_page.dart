@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_list/constants/constants.dart';
+import 'package:smart_list/constants/theme_constants.dart';
+import 'package:smart_list/models/predicted_product.dart';
 
 import '../bloc/cart_bloc/cart_bloc.dart';
 
 class MyCart extends StatefulWidget {
-  const MyCart({Key? key}) : super(key: key);
+  MyCart({Key? key}) : super(key: key);
+
+  List<PredictedProduct> products = [];
+  var totalCost = 0.0;
 
   @override
   _MyCartState createState() => _MyCartState();
@@ -18,9 +22,17 @@ class _MyCartState extends State<MyCart> {
         appBar: AppBar(
           title: const Text(
             "Smart List",
-            style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Constants.themeColor,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.chevron_left,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: ThemeConstants.themeColor,
           centerTitle: true,
         ),
         body: Container(
@@ -29,27 +41,37 @@ class _MyCartState extends State<MyCart> {
               image: DecorationImage(
                   image: AssetImage('assets/images/bg1.jpg'),
                   fit: BoxFit.cover)),
-          child: BlocBuilder<CartBloc, CartState>(
-            builder: (context, state) {
-              if (state is CartInitial) {
-                context.read<CartBloc>().add(const CartLoadEvent(
-                    userId: "user_e4cfcc06-799d-40b2-9587-faa832e3b28d"));
+          child: BlocConsumer<CartBloc, CartState>(
+            listener: (context, state) {
+              if (state is CartLoadedState) {
+                for (var product in widget.products) {
+                  widget.totalCost = product.price;
+                }
               }
+            },
+            builder: (context, state) {
+              // if (state is CartInitial) {
+              //   context.read<CartBloc>().add(const CartLoadEvent(
+              //       userId: "user_e4cfcc06-799d-40b2-9587-faa832e3b28d"));
+              // }
               if (state is CartLoadingState) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (state is CartLoadedState) {
+                widget.products = state.cartItems;
                 return Column(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
-                      height: MediaQuery.of(context).size.height * 0.75,
+                      height: MediaQuery.of(context).size.height * 0.80,
                       child: ListView.builder(
                         itemCount: state.cartItems.length,
                         itemBuilder: (context, index) => Dismissible(
                           direction: DismissDirection.endToStart,
                           onDismissed: (DismissDirection direction) {
-                            // state.cartItems.remove(state.cartItems[index]);
+                            BlocProvider.of<CartBloc>(context).add(
+                                RemoveFromCart(
+                                    product: widget.products[index]));
                           },
                           key: UniqueKey(),
                           background: Container(
@@ -68,15 +90,24 @@ class _MyCartState extends State<MyCart> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
                             child: ListTile(
-                                leading: const Icon(Icons.done),
-                                title: Text(
-                                  state.cartItems[index].productName,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.white54,
+                                  child: FittedBox(
+                                    child: Text(
+                                        widget.products[index].quantity
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(color: Colors.black)),
                                   ),
                                 ),
+                                title: Text(
+                                  widget.products[index].productName,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                                 trailing: Text(
-                                  state.cartItems[index].quantity.toString(),
+                                  "${widget.products[index].price} TL",
                                 )),
                           ),
                         ),
@@ -84,7 +115,8 @@ class _MyCartState extends State<MyCart> {
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      child: Center(child: purchasedArea(context, state)),
+                      child: Center(
+                          child: purchasedArea(context, widget.totalCost)),
                     ),
                   ],
                 );
@@ -101,124 +133,137 @@ class _MyCartState extends State<MyCart> {
   }
 }
 
-Widget purchasedArea(BuildContext context, CartLoadedState state) {
-  double totalCost = 0;
-  for (var item in state.cartItems) {
-    totalCost += item.price;
-  }
-
-  totalCost = double.parse(totalCost.toStringAsFixed(2));
-
-  return Container(
-    color: Colors.transparent,
-    child: Wrap(
-      direction: Axis.horizontal,
+Widget purchasedArea(BuildContext context, double totalCost) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    child: Row(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 2,
-          height: 60,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Center(
-              child: Text(
-                "${totalCost.toString()} TL",
-                style: const TextStyle(fontSize: 15),
-              ),
-            ),
+        Expanded(
+          flex: 3,
+          child: BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              if (state is CartLoadedState) {
+                return buildCostArea(totalCost);
+              }
+              return Container();
+            },
           ),
         ),
         const SizedBox(
           width: 10,
         ),
-        MaterialButton(
-            minWidth: MediaQuery.of(context).size.width / 6,
-            height: 60,
-            onPressed: () async {
-              // showDialog(
-              //     context: context,
-              //     builder: (BuildContext context) {
-              //       return savePurchaseAlert(context, totalCost);
-              //     });
-            },
-            color: Colors.green,
-            textColor: Colors.white10,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Icon(
-              Icons.monetization_on_sharp,
-              color: Colors.white,
-            )),
+        Expanded(
+          flex: 1,
+          child: buildPurchase(),
+        ),
         const SizedBox(
           width: 10,
         ),
-        MaterialButton(
-            minWidth: MediaQuery.of(context).size.width / 6,
-            height: 60,
-            onPressed: () {
-              // showProductRemoveAlert(context, cart);
-            },
-            color: Colors.redAccent,
-            textColor: Colors.white10,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Icon(
-              Icons.delete_forever,
-              color: Colors.white,
-            )),
+        Expanded(
+          flex: 1,
+          child: buildClearList(context),
+        ),
       ],
     ),
   );
 }
 
-// void showProductRemoveAlert(BuildContext context, CartProvider cart) {
-//   showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text("Attention!"),
-//           content: Text('Do you want to remove all products?'),
-//           actions: [
-//             TextButton(
-//               child: Text("No"),
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-//             TextButton(
-//               child: Text("Yes"),
-//               onPressed: () {
-//                 cart.removeAllProducts();
-//                 Navigator.pop(context);
-//                 // ScaffoldMessenger.of(context).showSnackBar(
-//                 //   showSnackBarMessage("Products are removed"),
-//                 // );
-//               },
-//             ),
-//           ],
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(15),
-//           ),
-//         );
-//       });
-// }
+buildClearList(BuildContext context) {
+  return MaterialButton(
+      height: 60,
+      onPressed: () {
+        // showProductRemoveAlert(context, cart);
+      },
+      color: Colors.redAccent,
+      textColor: Colors.white10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: const Icon(
+        Icons.delete_forever,
+        color: Colors.white,
+      ));
+}
 
-// Widget showSnackBarMessage(String message) {
-//   final _color = const Color.fromRGBO(15, 30, 179, 100);
-//   return SnackBar(
-//     duration: Duration(milliseconds: 1500),
-//     content: Align(
-//         alignment: Alignment.center, heightFactor: 1, child: Text(message)),
-//     backgroundColor: _color,
-//     shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-//   );
-// }
+buildPurchase() {
+  return MaterialButton(
+      height: 60,
+      onPressed: () async {
+        // showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return savePurchaseAlert(context, totalCost);
+        //     });
+      },
+      color: Colors.green,
+      textColor: Colors.white10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: const Icon(
+        Icons.monetization_on_sharp,
+        color: Colors.white,
+      ));
+}
+
+buildCostArea(double totalCost) {
+  return Container(
+    height: 60,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Center(
+      child: Text(
+        "${totalCost.toString()} TL",
+        style: const TextStyle(fontSize: 15),
+      ),
+    ),
+  );
+}
+
+void showProductRemoveAlert(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Attention!"),
+          content: const Text('Do you want to remove all products?'),
+          actions: [
+            TextButton(
+              child: const Text("No"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text("Yes"),
+              onPressed: () {
+                context.watch<CartBloc>().add(const ClearCartEvent());
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(snackbar("All products removed!"));
+              },
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        );
+      });
+}
+
+snackbar(String message) {
+  return SnackBar(
+    duration: const Duration(milliseconds: 1500),
+    content: Align(
+        alignment: Alignment.center, heightFactor: 1, child: Text(message)),
+    backgroundColor: ThemeConstants.themeColor,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+  );
+}
 
 // Widget savePurchaseAlert(BuildContext context, double totalCost) {
 //   FirebaseAuth auth = FirebaseAuth.instance;
