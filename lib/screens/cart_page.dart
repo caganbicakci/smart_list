@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_list/constants/theme_constants.dart';
 import 'package:smart_list/models/predicted_product.dart';
 
@@ -9,7 +12,7 @@ class MyCart extends StatefulWidget {
   MyCart({Key? key}) : super(key: key);
 
   List<PredictedProduct> products = [];
-  var totalCost = 0.0;
+  double totalCost = 0.0;
 
   @override
   _MyCartState createState() => _MyCartState();
@@ -41,14 +44,7 @@ class _MyCartState extends State<MyCart> {
               image: DecorationImage(
                   image: AssetImage('assets/images/bg1.jpg'),
                   fit: BoxFit.cover)),
-          child: BlocConsumer<CartBloc, CartState>(
-            listener: (context, state) {
-              if (state is CartLoadedState) {
-                for (var product in widget.products) {
-                  widget.totalCost = product.price;
-                }
-              }
-            },
+          child: BlocBuilder<CartBloc, CartState>(
             builder: (context, state) {
               // if (state is CartInitial) {
               //   context.read<CartBloc>().add(const CartLoadEvent(
@@ -59,6 +55,9 @@ class _MyCartState extends State<MyCart> {
               }
               if (state is CartLoadedState) {
                 widget.products = state.cartItems;
+                widget.totalCost = widget.products
+                    .fold(0.0, (prev, element) => prev + element.price);
+
                 return Column(
                   children: [
                     Container(
@@ -107,17 +106,13 @@ class _MyCartState extends State<MyCart> {
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 trailing: Text(
-                                  "${widget.products[index].price} TL",
+                                  "${widget.products[index].price.toStringAsFixed(2)} TL",
                                 )),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                          child: purchasedArea(context, widget.totalCost)),
-                    ),
+                    purchasedArea(context, widget.products, widget.totalCost),
                   ],
                 );
               }
@@ -133,28 +128,32 @@ class _MyCartState extends State<MyCart> {
   }
 }
 
-Widget purchasedArea(BuildContext context, double totalCost) {
+Widget purchasedArea(BuildContext context, List products, double totalCost) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Row(
       children: [
         Expanded(
-          flex: 3,
-          child: BlocBuilder<CartBloc, CartState>(
-            builder: (context, state) {
-              if (state is CartLoadedState) {
-                return buildCostArea(totalCost);
-              }
-              return Container();
-            },
-          ),
-        ),
+            flex: 3,
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                child: Text(
+                  "${totalCost.toStringAsFixed(2)} TL",
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ),
+            )),
         const SizedBox(
           width: 10,
         ),
         Expanded(
           flex: 1,
-          child: buildPurchase(),
+          child: buildPurchase(context, products, totalCost),
         ),
         const SizedBox(
           width: 10,
@@ -185,15 +184,15 @@ buildClearList(BuildContext context) {
       ));
 }
 
-buildPurchase() {
+buildPurchase(BuildContext context, List products, double totalCost) {
   return MaterialButton(
       height: 60,
       onPressed: () async {
-        // showDialog(
-        //     context: context,
-        //     builder: (BuildContext context) {
-        //       return savePurchaseAlert(context, totalCost);
-        //     });
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return savePurchaseAlert(context, products, totalCost);
+            });
       },
       color: Colors.green,
       textColor: Colors.white10,
@@ -204,22 +203,6 @@ buildPurchase() {
         Icons.monetization_on_sharp,
         color: Colors.white,
       ));
-}
-
-buildCostArea(double totalCost) {
-  return Container(
-    height: 60,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(15),
-    ),
-    child: Center(
-      child: Text(
-        "${totalCost.toString()} TL",
-        style: const TextStyle(fontSize: 15),
-      ),
-    ),
-  );
 }
 
 void showProductRemoveAlert(BuildContext context) {
@@ -265,86 +248,74 @@ snackbar(String message) {
   );
 }
 
-// Widget savePurchaseAlert(BuildContext context, double totalCost) {
-//   FirebaseAuth auth = FirebaseAuth.instance;
-//   User user;
-//   var cart = context.watch<CartProvider>();
-//   var _date = DateTime.now();
-//   return AlertDialog(
-//     contentPadding: EdgeInsets.zero,
-//     content: Container(
-//       height: 250,
-//       width: MediaQuery.of(context).size.width - 10,
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.end,
-//         children: [
-//           Expanded(
-//             flex: 4,
-//             child: Container(
-//               padding: EdgeInsets.all(20),
-//               child: Wrap(
-//                 children: [
-//                   Align(
-//                     alignment: Alignment.center,
-//                     child: Text(
-//                       'Total Cost: ${totalCost.toString()} TL',
-//                       style: GoogleFonts.openSans(
-//                           fontSize: 18, color: Colors.blueGrey),
-//                     ),
-//                   ),
-//                   SizedBox(
-//                     height: 50,
-//                   ),
-//                   Container(
-//                     padding: EdgeInsets.symmetric(vertical: 20),
-//                     height: 100,
-//                     child: CupertinoDatePicker(
-//                       mode: CupertinoDatePickerMode.date,
-//                       initialDateTime: DateTime.now(),
-//                       onDateTimeChanged: (DateTime newDateTime) {
-//                         _date = newDateTime;
-//                       },
-//                     ),
-//                   ),
-//                   SizedBox(height: 10),
-//                 ],
-//               ),
-//             ),
-//           ),
-//           Expanded(
-//             flex: 1,
-//             child: FlatButton(
-//               padding: EdgeInsets.zero,
-//               onPressed: () async {
-//                 var _products = '';
-//                 for (var item in cart.items) {
-//                   _products += (item.productName.toString() +
-//                           " " +
-//                           item.quantityPerUnit) +
-//                       '\n';
-//                 }
-
-//                 var selectedDate = DateFormat('dd-MM-yyyy').format(_date);
-
-//                 cart.addPurchasedProducts(new PreviousPurchasedProduct(
-//                     totalCost, selectedDate.toString(), _products));
-//                 Navigator.pop(context);
-//               },
-//               child: Text(
-//                 "Save",
-//                 style: TextStyle(color: Colors.white),
-//               ),
-//               color: Colors.green,
-//               minWidth: MediaQuery.of(context).size.width - 10,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.only(
-//                       bottomLeft: Radius.circular(15),
-//                       bottomRight: Radius.circular(15))),
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-//   );
-// }
+Widget savePurchaseAlert(
+    BuildContext context, List products, double totalCost) {
+  var _date = DateTime.now();
+  return AlertDialog(
+    contentPadding: EdgeInsets.zero,
+    content: SizedBox(
+      height: 250,
+      width: MediaQuery.of(context).size.width - 10,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            flex: 4,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Wrap(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Total Cost: ${totalCost.toStringAsFixed(2)} TL',
+                      style: GoogleFonts.openSans(
+                          fontSize: 18, color: Colors.blueGrey),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    height: 100,
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.date,
+                      initialDateTime: DateTime.now(),
+                      onDateTimeChanged: (DateTime newDateTime) {
+                        _date = newDateTime;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: MaterialButton(
+              padding: EdgeInsets.zero,
+              color: Colors.green,
+              minWidth: MediaQuery.of(context).size.width - 10,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15))),
+              child: Text(
+                "Save",
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+  );
+}

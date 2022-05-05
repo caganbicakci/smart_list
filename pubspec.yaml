@@ -22,6 +22,7 @@ dependencies:
   google_fonts: null
   google_nav_bar: null
   http: null
+  intl: ^0.17.0
   line_icons: null
   lottie: ^1.3.0
   path: null
