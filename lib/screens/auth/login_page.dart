@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../constants/theme_constants.dart';
 import '../../widgets/background.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,21 +18,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State {
   bool rememberMe = false;
   FirebaseAuth auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   late User user;
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
-  final kBoxDecorationStyle = BoxDecoration(
-    borderRadius: BorderRadius.circular(30.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 1.0,
-      ),
-    ],
-  );
 
   bool _obscureText = true;
 
@@ -53,84 +45,36 @@ class _LoginPageState extends State {
     return Stack(
       children: [
         const LoginPageBg(),
-        SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 60,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/logos/smart_list_logo.png',
-                    height: 125,
-                    width: 125,
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 60,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/logos/smart_list_logo.png',
+                        height: 125,
+                        width: 125,
+                      ),
+                      const SizedBox(height: 40),
+                      buildUsernameField(),
+                      const SizedBox(height: 20),
+                      buildPasswordField(),
+                      buildForgotPasswordField(),
+                      buildLoginButton(context),
+                      buildSignUpArea(),
+                    ],
                   ),
-                  const SizedBox(height: 50),
-                  buildUsernameField(),
-                  const SizedBox(height: 20),
-                  buildPasswordField(),
-                  buildForgotPasswordField(),
-                  // buildRememberMeField(),
-                  buildLoginButton(context),
-                  // buildGoogleAndFacebookLogin(),
-                  buildSignUpArea(),
-                ],
-              ),
-            ),
+                )),
           ),
-        )
-      ],
-    );
-  }
-
-  Column buildGoogleAndFacebookLogin() {
-    return Column(
-      children: [
-        const Text(
-          "- OR -",
-          style: TextStyle(color: Colors.white),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        const Text(
-          "Sign in with",
-          style: TextStyle(color: Colors.white),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 60,
-              width: 60,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                      image: AssetImage("assets/logos/facebook_logo.png"))),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            Container(
-              height: 60,
-              width: 60,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                    image: AssetImage("assets/logos/google_logo.png"),
-                  )),
-            ),
-          ],
         )
       ],
     );
@@ -143,7 +87,10 @@ class _LoginPageState extends State {
       height: 55,
       child: TextField(
           controller: usernameController,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(top: 15),
@@ -166,7 +113,10 @@ class _LoginPageState extends State {
       height: 55,
       child: TextField(
           controller: passwordController,
-          style: TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           obscureText: _obscureText,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
@@ -179,7 +129,7 @@ class _LoginPageState extends State {
                 size: 21,
               ),
               suffixIcon: Container(
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: GestureDetector(
                   child: _obscureText
                       ? const Icon(
@@ -220,9 +170,9 @@ class _LoginPageState extends State {
 
   buildLoginButton(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12.5),
+      padding: const EdgeInsets.symmetric(vertical: 12.5),
       width: double.infinity,
-      child: RaisedButton(
+      child: MaterialButton(
         elevation: 5.0,
         color: Colors.white,
         padding: const EdgeInsets.all(15),
@@ -265,8 +215,7 @@ class _LoginPageState extends State {
           "- OR -",
           style: GoogleFonts.openSans(color: Colors.white, fontSize: 16),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 12.5),
+        SizedBox(
           width: double.infinity,
           child: Center(
             child: RichText(

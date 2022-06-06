@@ -12,8 +12,12 @@ class AppRouter {
     switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => const MainNavBar(),
+          builder: (_) => const LoginPage(),
         );
+      // case '/':
+      //   return MaterialPageRoute(
+      //     builder: (_) => const MainNavBar(),
+      //   );
       case '/login_page':
         return MaterialPageRoute(
           builder: (_) => const LoginPage(),
