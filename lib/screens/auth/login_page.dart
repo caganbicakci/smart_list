@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smart_list/constants/strings.dart';
 
 import '../../constants/theme_constants.dart';
 import '../../widgets/background.dart';
@@ -17,12 +21,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State {
   bool rememberMe = false;
-  FirebaseAuth auth = FirebaseAuth.instance;
+
   final GlobalKey<FormState> formKey = GlobalKey();
 
   late User user;
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool _obscureText = true;
@@ -35,7 +39,7 @@ class _LoginPageState extends State {
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -86,7 +90,7 @@ class _LoginPageState extends State {
       alignment: Alignment.centerLeft,
       height: 55,
       child: TextField(
-          controller: usernameController,
+          controller: emailController,
           style: Theme.of(context)
               .textTheme
               .bodyText2!
@@ -99,7 +103,7 @@ class _LoginPageState extends State {
                 Icons.account_circle_rounded,
                 color: Colors.white,
               ),
-              hintText: 'Email',
+              hintText: EMAIL_HINT,
               hintStyle: TextStyle(
                 color: Colors.white54,
               ))),
@@ -121,7 +125,7 @@ class _LoginPageState extends State {
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
               fillColor: Colors.white,
-              contentPadding: EdgeInsets.only(top: 15),
+              contentPadding: const EdgeInsets.only(top: 15),
               border: InputBorder.none,
               prefixIcon: const Icon(
                 Icons.lock_outline_rounded,
@@ -145,7 +149,7 @@ class _LoginPageState extends State {
                   },
                 ),
               ),
-              hintText: 'Password',
+              hintText: PSW_HINT,
               hintStyle: const TextStyle(
                 color: Colors.white54,
               ))),
@@ -158,7 +162,7 @@ class _LoginPageState extends State {
       padding: const EdgeInsets.all(15),
       child: RichText(
         text: TextSpan(
-            text: "Forgot Password?",
+            text: FORGOT_PSW,
             style: const TextStyle(color: Colors.white),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
@@ -169,42 +173,49 @@ class _LoginPageState extends State {
   }
 
   buildLoginButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.5),
-      width: double.infinity,
-      child: MaterialButton(
-        elevation: 5.0,
-        color: Colors.white,
-        padding: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: const Text(
-          "LOGIN",
-          style:
-              TextStyle(color: Colors.black54, letterSpacing: 1, fontSize: 15),
-        ),
-        onPressed: () async {
-          UserCredential userCredential = await auth.signInWithEmailAndPassword(
-              email: usernameController.text,
-              password: passwordController.text);
-          setState(() {
-            user = userCredential.user!;
-          });
-          if (user != null) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-            // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
-            FocusScope.of(context).requestFocus(FocusNode());
-          } else {
-            // Toast.show("E-mail or password is wrong!", context,
-            //     textColor: Colors.black,
-            //     backgroundColor: Colors.white70,
-            //     gravity: Toast.CENTER,
-            //     duration: Toast.LENGTH_LONG);
-          }
-        },
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.5),
+          width: double.infinity,
+          child: MaterialButton(
+            elevation: 5.0,
+            color: Colors.white,
+            padding: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Text(
+              LOGIN_BTN_TEXT,
+              style: TextStyle(
+                  color: Colors.black54, letterSpacing: 1, fontSize: 15),
+            ),
+            onPressed: () async {
+              BlocProvider.of<AuthBloc>(context).add(
+                LoginEvent(
+                  email: emailController.text,
+                  password: passwordController.text,
+                ),
+              );
+              if (state is Authenticated) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/', (Route<dynamic> route) => true);
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
+                FocusScope.of(context).requestFocus(FocusNode());
+              } else {
+                if (kDebugMode) {
+                  print("Erorrrr");
+                }
+                // Toast.show("E-mail or password is wrong!", context,
+                //     textColor: Colors.black,
+                //     backgroundColor: Colors.white70,
+                //     gravity: Toast.CENTER,
+                //     duration: Toast.LENGTH_LONG);
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -212,7 +223,7 @@ class _LoginPageState extends State {
     return Column(
       children: [
         Text(
-          "- OR -",
+          OR_SIGN_UP_WITH,
           style: GoogleFonts.openSans(color: Colors.white, fontSize: 16),
         ),
         SizedBox(
@@ -222,12 +233,12 @@ class _LoginPageState extends State {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: "Don't you have an account? ",
+                    text: DONT_HAVE_ACCOUNT,
                     style:
                         GoogleFonts.notoSans(fontSize: 14, color: Colors.white),
                   ),
                   TextSpan(
-                      text: "Sign up here!",
+                      text: SIGN_UP_HERE,
                       style: GoogleFonts.notoSans(
                           fontSize: 14,
                           color: Colors.white,
