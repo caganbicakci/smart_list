@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smart_list/constants/strings.dart';
 
+import '../../constants/theme_constants.dart';
 import '../../widgets/background.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,22 +21,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State {
   bool rememberMe = false;
-  FirebaseAuth auth = FirebaseAuth.instance;
+
+  final GlobalKey<FormState> formKey = GlobalKey();
 
   late User user;
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-  final kBoxDecorationStyle = BoxDecoration(
-    borderRadius: BorderRadius.circular(30.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 1.0,
-      ),
-    ],
-  );
 
   bool _obscureText = true;
 
@@ -43,7 +39,7 @@ class _LoginPageState extends State {
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -53,84 +49,36 @@ class _LoginPageState extends State {
     return Stack(
       children: [
         const LoginPageBg(),
-        SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 60,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/logos/smart_list_logo.png',
-                    height: 125,
-                    width: 125,
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 60,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/logos/smart_list_logo.png',
+                        height: 125,
+                        width: 125,
+                      ),
+                      const SizedBox(height: 40),
+                      buildUsernameField(),
+                      const SizedBox(height: 20),
+                      buildPasswordField(),
+                      buildForgotPasswordField(),
+                      buildLoginButton(context),
+                      buildSignUpArea(),
+                    ],
                   ),
-                  const SizedBox(height: 50),
-                  buildUsernameField(),
-                  const SizedBox(height: 20),
-                  buildPasswordField(),
-                  buildForgotPasswordField(),
-                  // buildRememberMeField(),
-                  buildLoginButton(context),
-                  // buildGoogleAndFacebookLogin(),
-                  buildSignUpArea(),
-                ],
-              ),
-            ),
+                )),
           ),
-        )
-      ],
-    );
-  }
-
-  Column buildGoogleAndFacebookLogin() {
-    return Column(
-      children: [
-        const Text(
-          "- OR -",
-          style: TextStyle(color: Colors.white),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        const Text(
-          "Sign in with",
-          style: TextStyle(color: Colors.white),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 60,
-              width: 60,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                      image: AssetImage("assets/logos/facebook_logo.png"))),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            Container(
-              height: 60,
-              width: 60,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                    image: AssetImage("assets/logos/google_logo.png"),
-                  )),
-            ),
-          ],
         )
       ],
     );
@@ -142,8 +90,11 @@ class _LoginPageState extends State {
       alignment: Alignment.centerLeft,
       height: 55,
       child: TextField(
-          controller: usernameController,
-          style: const TextStyle(color: Colors.white),
+          controller: emailController,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(top: 15),
@@ -152,7 +103,7 @@ class _LoginPageState extends State {
                 Icons.account_circle_rounded,
                 color: Colors.white,
               ),
-              hintText: 'Email',
+              hintText: EMAIL_HINT,
               hintStyle: TextStyle(
                 color: Colors.white54,
               ))),
@@ -166,12 +117,15 @@ class _LoginPageState extends State {
       height: 55,
       child: TextField(
           controller: passwordController,
-          style: TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           obscureText: _obscureText,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
               fillColor: Colors.white,
-              contentPadding: EdgeInsets.only(top: 15),
+              contentPadding: const EdgeInsets.only(top: 15),
               border: InputBorder.none,
               prefixIcon: const Icon(
                 Icons.lock_outline_rounded,
@@ -179,7 +133,7 @@ class _LoginPageState extends State {
                 size: 21,
               ),
               suffixIcon: Container(
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: GestureDetector(
                   child: _obscureText
                       ? const Icon(
@@ -195,7 +149,7 @@ class _LoginPageState extends State {
                   },
                 ),
               ),
-              hintText: 'Password',
+              hintText: PSW_HINT,
               hintStyle: const TextStyle(
                 color: Colors.white54,
               ))),
@@ -208,7 +162,7 @@ class _LoginPageState extends State {
       padding: const EdgeInsets.all(15),
       child: RichText(
         text: TextSpan(
-            text: "Forgot Password?",
+            text: FORGOT_PSW,
             style: const TextStyle(color: Colors.white),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
@@ -219,42 +173,49 @@ class _LoginPageState extends State {
   }
 
   buildLoginButton(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12.5),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        color: Colors.white,
-        padding: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: const Text(
-          "LOGIN",
-          style:
-              TextStyle(color: Colors.black54, letterSpacing: 1, fontSize: 15),
-        ),
-        onPressed: () async {
-          UserCredential userCredential = await auth.signInWithEmailAndPassword(
-              email: usernameController.text,
-              password: passwordController.text);
-          setState(() {
-            user = userCredential.user!;
-          });
-          if (user != null) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-            // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
-            FocusScope.of(context).requestFocus(FocusNode());
-          } else {
-            // Toast.show("E-mail or password is wrong!", context,
-            //     textColor: Colors.black,
-            //     backgroundColor: Colors.white70,
-            //     gravity: Toast.CENTER,
-            //     duration: Toast.LENGTH_LONG);
-          }
-        },
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.5),
+          width: double.infinity,
+          child: MaterialButton(
+            elevation: 5.0,
+            color: Colors.white,
+            padding: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Text(
+              LOGIN_BTN_TEXT,
+              style: TextStyle(
+                  color: Colors.black54, letterSpacing: 1, fontSize: 15),
+            ),
+            onPressed: () async {
+              BlocProvider.of<AuthBloc>(context).add(
+                LoginEvent(
+                  email: emailController.text,
+                  password: passwordController.text,
+                ),
+              );
+              if (state is Authenticated) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/', (Route<dynamic> route) => true);
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
+                FocusScope.of(context).requestFocus(FocusNode());
+              } else {
+                if (kDebugMode) {
+                  print("Erorrrr");
+                }
+                // Toast.show("E-mail or password is wrong!", context,
+                //     textColor: Colors.black,
+                //     backgroundColor: Colors.white70,
+                //     gravity: Toast.CENTER,
+                //     duration: Toast.LENGTH_LONG);
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -262,23 +223,22 @@ class _LoginPageState extends State {
     return Column(
       children: [
         Text(
-          "- OR -",
+          OR_SIGN_UP_WITH,
           style: GoogleFonts.openSans(color: Colors.white, fontSize: 16),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 12.5),
+        SizedBox(
           width: double.infinity,
           child: Center(
             child: RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: "Don't you have an account? ",
+                    text: DONT_HAVE_ACCOUNT,
                     style:
                         GoogleFonts.notoSans(fontSize: 14, color: Colors.white),
                   ),
                   TextSpan(
-                      text: "Sign up here!",
+                      text: SIGN_UP_HERE,
                       style: GoogleFonts.notoSans(
                           fontSize: 14,
                           color: Colors.white,

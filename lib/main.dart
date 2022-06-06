@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smart_list/bloc/product_bloc/product_bloc.dart';
+import 'package:smart_list/constants/strings.dart';
 import 'package:smart_list/data/repository/product_repositroy.dart';
 import 'package:smart_list/router/app_router.dart';
 import 'package:smart_list/screens/about_us_page.dart';
@@ -15,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'constants/theme_constants.dart';
 import 'data/repository/cart_repository.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,11 +55,14 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => CartBloc(CartRepository()),
         ),
+        BlocProvider(
+          create: (context) => AuthBloc(AuthService()),
+        ),
       ],
       child: MaterialApp(
-        title: 'Smart List',
+        title: APP_TITLE,
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: '/login_page',
         onGenerateRoute: _appRouter.onGenerateRoute,
       ),
     );
@@ -110,7 +116,7 @@ class _MainNavBarState extends State {
       extendBody: true,
       appBar: AppBar(
         title: const Text(
-          "Smart List",
+          APP_TITLE,
         ),
         backgroundColor: ThemeConstants.themeColor,
         centerTitle: true,
@@ -161,9 +167,9 @@ class _MainNavBarState extends State {
               curve: Curves.fastOutSlowIn,
               duration: const Duration(milliseconds: 500),
               tabs: [
-                buildGButton("Home", LineIcons.home, Colors.deepPurple),
-                buildGButton("PastPurchases", LineIcons.heart, Colors.teal),
-                buildGButton("About Us", LineIcons.infoCircle, Colors.pink),
+                buildGButton(HOME, LineIcons.home, Colors.deepPurple),
+                buildGButton(PAST_PURCHASES, LineIcons.heart, Colors.teal),
+                buildGButton(ABOUT_US, LineIcons.infoCircle, Colors.pink),
               ],
               selectedIndex: _selectedIndex,
               onTabChange: (index) {
@@ -183,17 +189,17 @@ class _MainNavBarState extends State {
     return showDialog(
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Attention!"),
-            content: const Text('Sign out from Smart List?'),
+            title: const Text(ATTENTION),
+            content: const Text(SIGN_OUT_MESSAGE),
             actions: [
               TextButton(
-                child: const Text("No"),
+                child: const Text(NO),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               TextButton(
-                child: const Text("Yes"),
+                child: const Text(YES),
                 onPressed: () {
                   signOut();
                   Navigator.of(context).pushReplacementNamed('/login_page');
