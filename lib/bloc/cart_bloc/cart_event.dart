@@ -18,3 +18,12 @@ class CartLoadEvent extends CartEvent {
   final String userId;
   const CartLoadEvent({required this.userId});
 }
+
+class CartUpdatedEvent extends CartEvent {
+  final List<PredictedProduct> products;
+  const CartUpdatedEvent({required this.products});
+}
+
+class ClearCartEvent extends CartEvent {
+  const ClearCartEvent();
+}

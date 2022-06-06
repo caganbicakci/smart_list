@@ -49,7 +49,7 @@ class _HomePageState extends State {
                     children: getCategoryWidgets(state.categories),
                   ),
                 ),
-                ProductListWidget(state.products),
+                ProductListWidget(products: state.products),
               ],
             );
           }
@@ -65,12 +65,12 @@ class _HomePageState extends State {
   List<Widget> getCategoryWidgets(List<Category> categories) {
     List<Widget> categoryWidgets = [];
     for (int i = 0; i < categories.length; i++) {
-      categoryWidgets.add(getCategoryWidget(categories[i]));
+      categoryWidgets.add(categoryWidget(categories[i]));
     }
     return categoryWidgets;
   }
 
-  Widget getCategoryWidget(Category category) {
+  Widget categoryWidget(Category category) {
     return MaterialButton(
       color: Colors.white,
       onPressed: () {

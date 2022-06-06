@@ -14,7 +14,7 @@ class PreviousPurchasedProduct {
     return {
       "cost": cost,
       "purchaseDate": purchaseDate,
-      "products" : products,
+      "products": products,
     };
   }
 }

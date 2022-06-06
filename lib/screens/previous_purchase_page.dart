@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:smart_list/models/previous_purchased_products.dart';
 
 class PreviousPurchasePage extends StatefulWidget {
+  const PreviousPurchasePage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _PreviousPurchasePage();
 }
@@ -13,17 +13,15 @@ class _PreviousPurchasePage extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(0),
-                child: _PreviousPurchasedProductsCart(),
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: _PreviousPurchasedProductsCart(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

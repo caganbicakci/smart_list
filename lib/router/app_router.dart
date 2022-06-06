@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smart_list/main.dart';
 import 'package:smart_list/screens/auth/password_reset_page.dart';
-import 'package:smart_list/screens/cart.dart';
+import 'package:smart_list/screens/cart_page.dart';
 
-import '../main.dart';
 import '../screens/auth/login_page.dart';
 import '../screens/auth/sign_up_page.dart';
 import '../screens/previous_purchase_page.dart';
@@ -28,7 +28,7 @@ class AppRouter {
         );
       case '/previous_purchase_page':
         return MaterialPageRoute(
-          builder: (_) => PreviousPurchasePage(),
+          builder: (_) => const PreviousPurchasePage(),
         );
       case '/password_reset_page':
         return MaterialPageRoute(
