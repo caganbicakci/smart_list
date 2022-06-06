@@ -11,6 +11,7 @@ import 'package:smart_list/router/app_router.dart';
 import 'package:smart_list/screens/about_us_page.dart';
 import 'package:smart_list/screens/home_page.dart';
 import 'package:smart_list/screens/previous_purchase_page.dart';
+import 'bloc/auth_bloc/auth_bloc.dart';
 import 'bloc/cart_bloc/cart_bloc.dart';
 
 import 'package:firebase_core/firebase_core.dart';
