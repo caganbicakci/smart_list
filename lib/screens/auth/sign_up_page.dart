@@ -181,6 +181,10 @@ class _SignUpPageState extends State {
                     password1: passwordController1.text,
                     password2: passwordController2.text),
               );
+
+              if (state is Authenticated) {
+                Navigator.pushReplacementNamed(context, '/');
+              }
             },
           ),
         );

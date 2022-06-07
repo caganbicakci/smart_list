@@ -199,14 +199,9 @@ class _LoginPageState extends State {
                 ),
               );
               if (state is Authenticated) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/', (Route<dynamic> route) => true);
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
-                FocusScope.of(context).requestFocus(FocusNode());
+                Navigator.pushReplacementNamed(context, '/');
+                // FocusScope.of(context).requestFocus(FocusNode());
               } else {
-                if (kDebugMode) {
-                  print("Erorrrr");
-                }
                 // Toast.show("E-mail or password is wrong!", context,
                 //     textColor: Colors.black,
                 //     backgroundColor: Colors.white70,
