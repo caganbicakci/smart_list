@@ -18,7 +18,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'constants/theme_constants.dart';
 import 'data/repository/cart_repository.dart';
-import 'services/auth_service.dart';
+import 'services/auth/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
