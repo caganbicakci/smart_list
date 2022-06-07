@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smart_list/constants/asset_constants.dart';
 import 'package:smart_list/constants/strings.dart';
 
 import '../../constants/theme_constants.dart';
@@ -64,7 +65,7 @@ class _LoginPageState extends State {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/logos/smart_list_logo.png',
+                        SMART_LIST_LOGO,
                         height: 125,
                         width: 125,
                       ),
