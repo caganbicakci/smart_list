@@ -95,7 +95,10 @@ class _SignUpPageState extends State {
       height: 55,
       child: TextField(
           controller: usernameController,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(top: 15),
@@ -118,7 +121,10 @@ class _SignUpPageState extends State {
       height: 55,
       child: TextField(
           controller: _controller,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           obscureText: _obscureText,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
