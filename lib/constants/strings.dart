@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const String APP_TITLE = 'Smart List';
 
 const String HOME = 'Home';
@@ -21,3 +23,6 @@ const String EMAIL_HINT = 'Email';
 
 const String LOGIN_BTN_TEXT = "LOGIN";
 const String SIGN_UP_BTN_TEXT = "SIGN UP";
+
+const String PSW_RESET_HINT = 'Enter an e-mail to reset password';
+const String PSW_RESET_BTN_TEXT = 'SEND RESET EMAIL';

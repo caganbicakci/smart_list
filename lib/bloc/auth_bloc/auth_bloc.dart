@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_list/services/auth_service.dart';
+import 'package:smart_list/services/auth/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
