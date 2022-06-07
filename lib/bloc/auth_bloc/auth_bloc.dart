@@ -11,13 +11,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(AuthService authService) : super(AuthInitial()) {
     on<SignUpEvent>((event, emit) async {
-      var signUpResult = await authService.signUpWithEmailAndPassword(
-          event.email, event.password);
-
-      if (signUpResult != null) {
-        emit(Authenticated(signUpResult.user!));
-      } else {
-        emit(AuthError());
+      if (event.password1 == event.password2) {
+        var signUpResult = await authService.signUpWithEmailAndPassword(
+          event.email,
+          event.password1,
+        );
+        if (signUpResult != null) {
+          emit(Authenticated(signUpResult.user!));
+        } else {
+          emit(AuthError());
+        }
       }
     });
 

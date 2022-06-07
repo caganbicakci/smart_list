@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_list/constants/asset_constants.dart';
+import 'package:smart_list/constants/strings.dart';
 
+import '../../bloc/auth_bloc/auth_bloc.dart';
+import '../../constants/theme_constants.dart';
 import '../../widgets/background.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _SignUpPageState();
@@ -28,16 +35,6 @@ class _SignUpPageState extends State {
     super.dispose();
   }
 
-  final kBoxDecorationStyle = BoxDecoration(
-    borderRadius: BorderRadius.circular(30.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 1.0,
-      ),
-    ],
-  );
-
   bool _obscureText = true;
 
   void _showHidePassword() {
@@ -60,32 +57,29 @@ class _SignUpPageState extends State {
               elevation: 0,
             ),
             backgroundColor: Colors.transparent,
-            body: Container(
-              // height: double.infinity,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 60,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/logos/smart_list_logo.png',
-                      height: 125,
-                      width: 125,
-                    ),
-                    SizedBox(height: 50),
-                    buildUsernameField(),
-                    SizedBox(height: 20),
-                    buildPasswordField(passwordController1, 'Password'),
-                    SizedBox(height: 20),
-                    buildPasswordField(passwordController2, 'Password Again'),
-                    // buildGoogleAndFacebookLogin(),
-                    buildSignUpBtn(),
-                  ],
-                ),
+            body: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40,
+                vertical: 60,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    SMART_LIST_LOGO,
+                    height: 125,
+                    width: 125,
+                  ),
+                  const SizedBox(height: 50),
+                  buildUsernameField(),
+                  const SizedBox(height: 20),
+                  buildPasswordField(passwordController1, PSW_HINT),
+                  const SizedBox(height: 20),
+                  buildPasswordField(passwordController2, PSW_HINT_2),
+                  // buildGoogleAndFacebookLogin(),
+                  buildSignUpBtn(),
+                ],
               ),
             ),
           ),
@@ -101,7 +95,10 @@ class _SignUpPageState extends State {
       height: 55,
       child: TextField(
           controller: usernameController,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(top: 15),
@@ -110,7 +107,7 @@ class _SignUpPageState extends State {
                 Icons.account_circle_rounded,
                 color: Colors.white,
               ),
-              hintText: 'Email',
+              hintText: EMAIL_HINT,
               hintStyle: TextStyle(
                 color: Colors.white54,
               ))),
@@ -124,12 +121,15 @@ class _SignUpPageState extends State {
       height: 55,
       child: TextField(
           controller: _controller,
-          style: const TextStyle(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: Colors.white),
           obscureText: _obscureText,
           keyboardType: TextInputType.visiblePassword,
           decoration: InputDecoration(
               fillColor: Colors.white,
-              contentPadding: EdgeInsets.only(top: 15),
+              contentPadding: const EdgeInsets.only(top: 15),
               border: InputBorder.none,
               prefixIcon: const Icon(
                 Icons.lock_outlined,
@@ -137,7 +137,7 @@ class _SignUpPageState extends State {
                 color: Colors.white,
               ),
               suffixIcon: Container(
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: GestureDetector(
                   child: _obscureText
                       ? const Icon(
@@ -161,40 +161,40 @@ class _SignUpPageState extends State {
   }
 
   buildSignUpBtn() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      width: double.infinity,
-      child: MaterialButton(
-        elevation: 5.0,
-        color: Colors.white,
-        padding: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: const Text(
-          "SIGN UP",
-          style:
-              TextStyle(color: Colors.black54, letterSpacing: 1, fontSize: 15),
-        ),
-        onPressed: () async {
-          if (usernameController.text.isNotEmpty &&
-              passwordController1.text == passwordController2.text &&
-              passwordController1.text != "" &&
-              passwordController2.text != "") {
-            try {
-              await auth.createUserWithEmailAndPassword(
-                  email: usernameController.text,
-                  password: passwordController1.text);
-              FocusScope.of(context).requestFocus(FocusNode());
-              Navigator.pop(context);
-            } catch (ex) {
-              // showSignUpError(ex.toString());
-            }
-          } else {
-            // showSignUpError("Please check e-mail or password!");
-          }
-        },
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 30),
+          width: double.infinity,
+          child: MaterialButton(
+            elevation: 5.0,
+            color: Colors.white,
+            padding: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Text(
+              SIGN_UP_BTN_TEXT,
+              style: TextStyle(
+                  color: Colors.black54, letterSpacing: 1, fontSize: 15),
+            ),
+            onPressed: () async {
+              if (passwordController1 == passwordController2) {}
+              var authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
+              authBloc.add(
+                SignUpEvent(
+                    email: usernameController.text,
+                    password1: passwordController1.text,
+                    password2: passwordController2.text),
+              );
+
+              if (state is Authenticated) {
+                Navigator.pushReplacementNamed(context, '/');
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smart_list/constants/asset_constants.dart';
 import 'package:smart_list/constants/strings.dart';
 
 import '../../constants/theme_constants.dart';
@@ -64,7 +65,7 @@ class _LoginPageState extends State {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/logos/smart_list_logo.png',
+                        SMART_LIST_LOGO,
                         height: 125,
                         width: 125,
                       ),
@@ -198,14 +199,9 @@ class _LoginPageState extends State {
                 ),
               );
               if (state is Authenticated) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/', (Route<dynamic> route) => true);
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MyNavigationBar()));
-                FocusScope.of(context).requestFocus(FocusNode());
+                Navigator.pushReplacementNamed(context, '/');
+                // FocusScope.of(context).requestFocus(FocusNode());
               } else {
-                if (kDebugMode) {
-                  print("Erorrrr");
-                }
                 // Toast.show("E-mail or password is wrong!", context,
                 //     textColor: Colors.black,
                 //     backgroundColor: Colors.white70,
