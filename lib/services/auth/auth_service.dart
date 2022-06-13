@@ -9,7 +9,6 @@ class AuthService {
       return await auth.signInWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -20,12 +19,31 @@ class AuthService {
       return await auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
 
+  Future<void> resetPassword({required String email}) async {
+    try {
+      return await auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      return;
+    }
+  }
+
   Future<void> signOut() async {
-    await auth.signOut();
+    try {
+      return await auth.signOut();
+    } catch (e) {
+      return;
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    try {
+      return auth.currentUser;
+    } catch (e) {
+      return null;
+    }
   }
 }

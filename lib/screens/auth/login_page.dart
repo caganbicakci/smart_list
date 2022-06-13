@@ -9,6 +9,7 @@ import 'package:smart_list/constants/asset_constants.dart';
 import 'package:smart_list/constants/strings.dart';
 
 import '../../constants/theme_constants.dart';
+import '../../main.dart';
 import '../../widgets/background.dart';
 
 class LoginPage extends StatefulWidget {
@@ -174,44 +175,60 @@ class _LoginPageState extends State {
   }
 
   buildLoginButton(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.5),
-          width: double.infinity,
-          child: MaterialButton(
-            elevation: 5.0,
-            color: Colors.white,
-            padding: const EdgeInsets.all(15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: const Text(
-              LOGIN_BTN_TEXT,
-              style: TextStyle(
-                  color: Colors.black54, letterSpacing: 1, fontSize: 15),
-            ),
-            onPressed: () async {
-              BlocProvider.of<AuthBloc>(context).add(
-                LoginEvent(
-                  email: emailController.text,
-                  password: passwordController.text,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12.5),
+      width: double.infinity,
+      child: MaterialButton(
+        elevation: 5.0,
+        color: Colors.white,
+        padding: const EdgeInsets.all(15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthError) {
+              Scaffold.of(context).showSnackBar(
+                const SnackBar(
+                  padding: EdgeInsets.all(5),
+                  content: Text("Error"),
                 ),
               );
-              if (state is Authenticated) {
-                Navigator.pushReplacementNamed(context, '/');
-                // FocusScope.of(context).requestFocus(FocusNode());
-              } else {
-                // Toast.show("E-mail or password is wrong!", context,
-                //     textColor: Colors.black,
-                //     backgroundColor: Colors.white70,
-                //     gravity: Toast.CENTER,
-                //     duration: Toast.LENGTH_LONG);
-              }
-            },
-          ),
-        );
-      },
+            }
+            if (state is Authenticated) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const MainNavBar()),
+                (route) => false,
+              );
+            }
+          },
+          builder: (context, state) {
+            // if (state is AuthInitial || state is AuthError) {}
+            if (state is AuthLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Text(
+              LOGIN_BTN_TEXT,
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    color: Colors.black54,
+                    letterSpacing: 1,
+                    fontSize: 15,
+                  ),
+            );
+          },
+        ),
+        onPressed: () async {
+          BlocProvider.of<AuthBloc>(context).add(
+            LoginEvent(
+              email: emailController.text,
+              password: passwordController.text,
+            ),
+          );
+        },
+      ),
     );
   }
 
