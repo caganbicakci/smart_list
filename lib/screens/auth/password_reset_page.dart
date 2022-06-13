@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_list/constants/asset_constants.dart';
 import 'package:smart_list/constants/strings.dart';
+import 'package:toast/toast.dart';
 
 import '../../constants/theme_constants.dart';
 import '../../widgets/background.dart';
@@ -54,9 +55,7 @@ class _PasswordResetPageState extends State {
                     const SizedBox(height: 60),
                     buildUsernameField(),
                     const SizedBox(height: 20),
-                    // buildRememberMeField(),
                     buildResetPasswordButton(context),
-                    // buildGoogleAndFacebookLogin(),
                   ],
                 ),
               ]),
@@ -111,11 +110,11 @@ class _PasswordResetPageState extends State {
           ),
           onPressed: () async {
             auth.sendPasswordResetEmail(email: usernameController.text);
-            // Toast.show("Pasword reset e-mail sended!", context,
-            //     textColor: Colors.black,
-            //     backgroundColor: Colors.white70,
-            //     gravity: Toast.CENTER,
-            //     duration: Toast.LENGTH_LONG);
+            Toast.show("Pasword reset e-mail sended!",
+                webTexColor: Colors.black,
+                backgroundColor: Colors.white70,
+                gravity: 1,
+                duration: 3);
           }),
     );
   }

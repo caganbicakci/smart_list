@@ -29,6 +29,7 @@ dependencies:
   provider: null
   syncfusion_flutter_charts: null
   url_launcher: null
+  toast: ^0.2.9
 
 dev_dependencies:
   flutter_lints: ^1.0.0

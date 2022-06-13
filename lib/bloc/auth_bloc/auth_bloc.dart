@@ -7,9 +7,8 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  late UserCredential user;
-
   AuthBloc(AuthService authService) : super(AuthInitial()) {
+    /////
     on<SignUpEvent>((event, emit) async {
       if (event.password1 == event.password2) {
         var signUpResult = await authService.signUpWithEmailAndPassword(
@@ -25,19 +24,40 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<LoginEvent>((event, emit) async {
-      var loginResult = await authService.signInWithEmailAndPassword(
-          event.email, event.password);
-
-      if (loginResult != null) {
-        emit(Authenticated(loginResult.user!));
-      } else {
+      try {
+        await authService
+            .signInWithEmailAndPassword(
+          event.email,
+          event.password,
+        )
+            .then((value) {
+          if (value != null) {
+            emit(Authenticated(value.user!));
+          } else {
+            emit(AuthInitial());
+          }
+        });
+      } catch (e) {
         emit(AuthError());
       }
     });
 
-    on<LogoutEvent>((event, emit) async {
-      authService.signOut();
-      emit(AuthInitial());
+    on<PasswordResetEvent>((event, emit) {
+      try {
+        authService.resetPassword(email: event.email);
+        emit(AuthInitial());
+      } catch (e) {
+        emit(AuthError());
+      }
+    });
+
+    on<LogoutEvent>((event, emit) {
+      try {
+        authService.signOut();
+        emit(Unauthenticated());
+      } catch (e) {
+        emit(AuthError());
+      }
     });
   }
 }
