@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,7 +90,7 @@ class _LoginPageState extends State {
       decoration: kBoxDecorationStyle,
       alignment: Alignment.centerLeft,
       height: 55,
-      child: TextField(
+      child: TextFormField(
           controller: emailController,
           style: Theme.of(context)
               .textTheme
@@ -117,7 +116,7 @@ class _LoginPageState extends State {
       decoration: kBoxDecorationStyle,
       alignment: Alignment.centerLeft,
       height: 55,
-      child: TextField(
+      child: TextFormField(
           controller: passwordController,
           style: Theme.of(context)
               .textTheme
@@ -178,56 +177,62 @@ class _LoginPageState extends State {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.5),
       width: double.infinity,
-      child: MaterialButton(
-        elevation: 5.0,
-        color: Colors.white,
-        padding: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthError) {
-              Scaffold.of(context).showSnackBar(
-                const SnackBar(
-                  padding: EdgeInsets.all(5),
-                  content: Text("Error"),
-                ),
-              );
-            }
-            if (state is Authenticated) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MainNavBar()),
-                (route) => false,
-              );
-            }
-          },
-          builder: (context, state) {
-            // if (state is AuthInitial || state is AuthError) {}
-            if (state is AuthLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Text(
-              LOGIN_BTN_TEXT,
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                    color: Colors.black54,
-                    letterSpacing: 1,
-                    fontSize: 15,
+      child: SizedBox(
+        height: 50,
+        child: MaterialButton(
+          elevation: 5.0,
+          color: Colors.white,
+          padding: const EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error),
                   ),
+                );
+              }
+              if (state is Authenticated) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainNavBar()),
+                  (route) => false,
+                );
+              }
+            },
+            builder: (context, state) {
+              // if (state is AuthInitial || state is AuthError) {}
+              if (state is AuthLoading) {
+                return const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                  ),
+                );
+              }
+              return Text(
+                LOGIN_BTN_TEXT,
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Colors.black54,
+                      letterSpacing: 1,
+                      fontSize: 15,
+                    ),
+              );
+            },
+          ),
+          onPressed: () async {
+            BlocProvider.of<AuthBloc>(context).add(
+              LoginEvent(
+                email: emailController.text,
+                password: passwordController.text,
+              ),
             );
           },
         ),
-        onPressed: () async {
-          BlocProvider.of<AuthBloc>(context).add(
-            LoginEvent(
-              email: emailController.text,
-              password: passwordController.text,
-            ),
-          );
-        },
       ),
     );
   }
