@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_list/main.dart';
-import 'package:smart_list/screens/auth/password_reset_page.dart';
-import 'package:smart_list/screens/cart_page.dart';
+import '../main.dart';
+import '../screens/auth/password_reset_page.dart';
+import '../screens/cart_page.dart';
+import '../screens/main_screen/main_nav_bar.dart';
 
 import '../screens/auth/login_page.dart';
 import '../screens/auth/sign_up_page.dart';
@@ -20,7 +21,7 @@ class AppRouter {
         );
       case '/sign_up_page':
         return MaterialPageRoute(
-          builder: (_) => SignUpPage(),
+          builder: (_) => const SignUpPage(),
         );
       case '/cart':
         return MaterialPageRoute(
@@ -32,7 +33,7 @@ class AppRouter {
         );
       case '/password_reset_page':
         return MaterialPageRoute(
-          builder: (_) => PasswordResetPage(),
+          builder: (_) => const PasswordResetPage(),
         );
       default:
         return null;

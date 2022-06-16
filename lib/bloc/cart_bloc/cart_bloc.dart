@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:smart_list/data/repository/cart_repository.dart';
+import '../../data/repository/cart_repository.dart';
 
 import '../../models/predicted_product.dart';
 

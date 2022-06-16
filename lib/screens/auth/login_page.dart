@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
-import 'package:smart_list/constants/asset_constants.dart';
-import 'package:smart_list/constants/strings.dart';
+import '../../bloc/auth_bloc/auth_bloc.dart';
+import '../../constants/asset_constants.dart';
+import '../../constants/strings.dart';
 
 import '../../constants/theme_constants.dart';
-import '../../main.dart';
 import '../../widgets/background.dart';
+import '../main_screen/main_nav_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

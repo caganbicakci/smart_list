@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_list/bloc/cart_bloc/cart_bloc.dart';
+import '../bloc/cart_bloc/cart_bloc.dart';
 
-import 'package:smart_list/widgets/product_list_widget.dart';
+import '../widgets/product_list_widget.dart';
 
 import '../bloc/product_bloc/product_bloc.dart';
 import '../models/category.dart';
