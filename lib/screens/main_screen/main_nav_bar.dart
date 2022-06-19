@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smart_list/screens/auth/login_page.dart';
+import '../../bloc/cart_bloc/cart_bloc.dart';
 import '../../constants/strings.dart';
 import '../about_us_page.dart';
 import '../home_page.dart';
@@ -34,21 +38,15 @@ class _MainNavBarState extends State {
   ];
 
   List<Text> texts = const [
-    Text('Home'),
-    Text('Past Purchases'),
-    Text('About Us'),
+    Text(HOME),
+    Text(PAST_PURCHASES),
+    Text(ABOUT_US),
   ];
 
   PageController controller = PageController();
   FirebaseAuth auth = FirebaseAuth.instance;
 
   var fabColor;
-
-  void signOut() async {
-    await auth.signOut();
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        '/login_page', (Route<dynamic> route) => false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,8 +139,9 @@ class _MainNavBarState extends State {
               TextButton(
                 child: const Text(YES),
                 onPressed: () {
-                  signOut();
-                  Navigator.of(context).pushReplacementNamed('/login_page');
+                  BlocProvider.of<AuthBloc>(context).add(LogoutEvent());
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/login_page', (Route<dynamic> route) => false);
                 },
               ),
             ],

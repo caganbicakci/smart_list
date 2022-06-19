@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_list/constants/strings.dart';
 import '../bloc/cart_bloc/cart_bloc.dart';
 
 import '../widgets/product_list_widget.dart';
@@ -29,8 +30,7 @@ class _HomePageState extends State {
       padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
-          context.read<CartBloc>().add(const CartLoadEvent(
-              userId: "user_e4cfcc06-799d-40b2-9587-faa832e3b28d"));
+          context.read<CartBloc>().add(const CartLoadEvent());
         },
         builder: (context, state) {
           if (state is ProductInitial) {
@@ -54,7 +54,7 @@ class _HomePageState extends State {
             );
           }
           if (state is ProductErrorState) {
-            return const Center(child: Text('Something went wrong!'));
+            return const Center(child: Text(SOMETHING_WENT_WRONG));
           }
           return Container();
         },

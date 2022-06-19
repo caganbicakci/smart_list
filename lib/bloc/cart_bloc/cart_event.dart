@@ -15,8 +15,7 @@ class RemoveFromCart extends CartEvent {
 }
 
 class CartLoadEvent extends CartEvent {
-  final String userId;
-  const CartLoadEvent({required this.userId});
+  const CartLoadEvent();
 }
 
 class CartUpdatedEvent extends CartEvent {

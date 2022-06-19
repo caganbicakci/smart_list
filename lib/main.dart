@@ -6,7 +6,6 @@ import 'bloc/product_bloc/product_bloc.dart';
 import 'constants/strings.dart';
 import 'data/repository/product_repositroy.dart';
 import 'router/app_router.dart';
-import 'bloc/auth_bloc/auth_bloc.dart';
 import 'bloc/cart_bloc/cart_bloc.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -28,16 +27,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AppRouter _appRouter = AppRouter();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  late User user;
-
-  @override
-  initState() {
-    if (auth.currentUser != null) {
-      user = auth.currentUser!;
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

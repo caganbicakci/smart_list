@@ -8,7 +8,7 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthService authService) : super(AuthInitial()) {
+  AuthBloc(AuthService authService) : super(Unauthenticated()) {
     /////
     on<SignUpEvent>((event, emit) async {
       emit(AuthLoading());
@@ -52,7 +52,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<PasswordResetEvent>((event, emit) {
       try {
         authService.resetPassword(email: event.email);
-        emit(AuthInitial());
       } catch (e) {
         emit(AuthError(AuthService.exception));
       }

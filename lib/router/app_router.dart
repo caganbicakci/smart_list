@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
 import '../screens/auth/password_reset_page.dart';
 import '../screens/cart_page.dart';
 import '../screens/main_screen/main_nav_bar.dart';
