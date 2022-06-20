@@ -43,15 +43,14 @@ class _MainScreenState extends State {
   ];
 
   PageController controller = PageController();
-  FirebaseAuth auth = FirebaseAuth.instance;
 
   var fabColor;
 
-  // @override
-  // void initState() {
-  //   context.read<CartBloc>().add(const CartLoadEvent());
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    context.read<CartBloc>().add(const CartLoadEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

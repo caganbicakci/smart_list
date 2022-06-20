@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../handler/data_type_handler.dart';
+
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
@@ -17,8 +19,8 @@ class Product {
 
   int categoryId;
   String imageUrl;
-  double price;
-  int productId;
+  num price;
+  String productId;
   String productName;
   double quantity;
   String quantityPerUnit;
@@ -26,10 +28,10 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         categoryId: json["categoryId"],
         imageUrl: json["imageUrl"],
-        price: json["price"] as double,
+        price: DataTypeHandler.checkDouble(json["price"].toString()),
         productId: json["productId"],
         productName: json["productName"],
-        quantity: json["quantity"] as double,
+        quantity: DataTypeHandler.checkDouble(json["quantity"].toString()),
         quantityPerUnit: json["quantityPerUnit"],
       );
 

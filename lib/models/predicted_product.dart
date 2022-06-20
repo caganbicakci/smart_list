@@ -1,3 +1,5 @@
+import 'package:smart_list/handler/data_type_handler.dart';
+
 class PredictedProduct {
   PredictedProduct({
     required this.price,
@@ -9,20 +11,20 @@ class PredictedProduct {
   double price;
   String productId;
   String productName;
-  double quantity;
+  int quantity;
 
   factory PredictedProduct.fromJson(Map<String, dynamic> json) =>
       PredictedProduct(
-        price: json["Price"] as double,
-        productId: json["ProductId"],
-        productName: json["ProductName"],
-        quantity: json["Quantity"] as double,
+        price: DataTypeHandler.checkDouble(json["price"].toString()),
+        productId: json["productId"],
+        productName: json["productName"],
+        quantity: json["quantity"],
       );
 
   Map<String, dynamic> toJson() => {
-        "Price": price,
-        "ProductId": productId,
-        "ProductName": productName,
-        "Quantity": quantity,
+        "price": price,
+        "productId": productId,
+        "productName": productName,
+        "quantity": quantity,
       };
 }

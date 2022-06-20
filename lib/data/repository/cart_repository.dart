@@ -25,9 +25,10 @@ class CartRepository {
   }
 
   getPredictionIdForCurrentUser() async {
-    var userEmail = FirebaseAuth.instance.currentUser!.email!;
-    var data = await firestoreRef.collection('users').doc(userEmail).get();
-
-    return data['userID'].toString();
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var data = await firestoreRef.collection('users').doc(user.email).get();
+      return data['userID'].toString();
+    }
   }
 }
