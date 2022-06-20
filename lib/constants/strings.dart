@@ -28,3 +28,15 @@ const String PSW_RESET_HINT = 'Enter an e-mail to reset password';
 const String PSW_RESET_BTN_TEXT = 'SEND RESET EMAIL';
 
 const String PASSWORDS_MISSMATCH = 'Passwords do not match';
+
+const String SOMETHING_WENT_WRONG = 'Something went wrong!';
+
+const String ATTENtION = 'Attention!';
+const String REMOVE_PRODUCTS_QUESTION = 'Do you want to remove all products?';
+const String PRODUCTS_REMOVED = '"All products removed!"';
+
+const String SAVE = 'Save';
+const String CANCEL = 'Cancel';
+
+const String TOTAL_COST = 'Total Cost';
+const String TL_CURRENCY = 'TL';

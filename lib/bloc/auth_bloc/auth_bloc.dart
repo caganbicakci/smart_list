@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_list/constants/strings.dart';
-import 'package:smart_list/services/auth/auth_service.dart';
+import '../../constants/strings.dart';
+import '../../services/auth/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthService authService) : super(AuthInitial()) {
+  AuthBloc(AuthService authService) : super(Unauthenticated()) {
     /////
     on<SignUpEvent>((event, emit) async {
       emit(AuthLoading());
@@ -52,7 +52,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<PasswordResetEvent>((event, emit) {
       try {
         authService.resetPassword(email: event.email);
-        emit(AuthInitial());
       } catch (e) {
         emit(AuthError(AuthService.exception));
       }

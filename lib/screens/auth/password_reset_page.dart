@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_list/constants/asset_constants.dart';
-import 'package:smart_list/constants/strings.dart';
+import '../../constants/asset_constants.dart';
+import '../../constants/strings.dart';
 import 'package:toast/toast.dart';
 
 import '../../constants/theme_constants.dart';

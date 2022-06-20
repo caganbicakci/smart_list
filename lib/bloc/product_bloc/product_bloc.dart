@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_list/data/repository/product_repositroy.dart';
-import 'package:smart_list/models/category.dart';
+import '../../data/repository/product_repositroy.dart';
+import '../../models/category.dart';
 
 import '../../models/product.dart';
 

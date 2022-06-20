@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:smart_list/constants/theme_constants.dart';
-import 'package:smart_list/models/predicted_product.dart';
+import 'package:smart_list/constants/strings.dart';
+import '../constants/theme_constants.dart';
+import '../models/predicted_product.dart';
 
 import '../bloc/cart_bloc/cart_bloc.dart';
 
@@ -24,7 +24,7 @@ class _MyCartState extends State<MyCart> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            "Smart List",
+            APP_TITLE,
           ),
           leading: IconButton(
             icon: const Icon(
@@ -46,10 +46,6 @@ class _MyCartState extends State<MyCart> {
                   fit: BoxFit.cover)),
           child: BlocBuilder<CartBloc, CartState>(
             builder: (context, state) {
-              // if (state is CartInitial) {
-              //   context.read<CartBloc>().add(const CartLoadEvent(
-              //       userId: "user_e4cfcc06-799d-40b2-9587-faa832e3b28d"));
-              // }
               if (state is CartLoadingState) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -106,7 +102,7 @@ class _MyCartState extends State<MyCart> {
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 trailing: Text(
-                                  "${widget.products[index].price.toStringAsFixed(2)} TL",
+                                  "${widget.products[index].price.toStringAsFixed(2)} $TL_CURRENCY",
                                 )),
                           ),
                         ),
@@ -118,7 +114,7 @@ class _MyCartState extends State<MyCart> {
               }
               if (state is CartErrorState) {
                 return const Center(
-                  child: Text("Something went wrong!"),
+                  child: Text(SOMETHING_WENT_WRONG),
                 );
               }
               return Container();
@@ -210,22 +206,22 @@ void showProductRemoveAlert(BuildContext context) {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Attention!"),
-          content: const Text('Do you want to remove all products?'),
+          title: const Text(ATTENTION),
+          content: const Text(REMOVE_PRODUCTS_QUESTION),
           actions: [
             TextButton(
-              child: const Text("No"),
+              child: const Text(NO),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: const Text("Yes"),
+              child: const Text(YES),
               onPressed: () {
                 context.watch<CartBloc>().add(const ClearCartEvent());
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context)
-                    .showSnackBar(snackbar("All products removed!"));
+                    .showSnackBar(snackbar(PRODUCTS_REMOVED));
               },
             ),
           ],
@@ -244,7 +240,9 @@ snackbar(String message) {
     backgroundColor: ThemeConstants.themeColor,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+      topLeft: Radius.circular(15),
+      topRight: Radius.circular(15),
+    )),
   );
 }
 
@@ -268,7 +266,7 @@ Widget savePurchaseAlert(
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'Total Cost: ${totalCost.toStringAsFixed(2)} TL',
+                      '$TOTAL_COST: ${totalCost.toStringAsFixed(2)} $TL_CURRENCY',
                       style: GoogleFonts.openSans(
                           fontSize: 18, color: Colors.blueGrey),
                     ),
@@ -303,7 +301,7 @@ Widget savePurchaseAlert(
                       bottomLeft: Radius.circular(15),
                       bottomRight: Radius.circular(15))),
               child: Text(
-                "Save",
+                SAVE,
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(
                       color: Colors.white,
                     ),

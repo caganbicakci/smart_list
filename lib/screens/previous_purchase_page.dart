@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_list/models/previous_purchased_products.dart';
+import '../models/previous_purchased_products.dart';
 
 class PreviousPurchasePage extends StatefulWidget {
   const PreviousPurchasePage({Key? key}) : super(key: key);

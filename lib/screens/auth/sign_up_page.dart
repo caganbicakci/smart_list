@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_list/constants/asset_constants.dart';
-import 'package:smart_list/constants/strings.dart';
+import '../../constants/asset_constants.dart';
+import '../../constants/strings.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../constants/theme_constants.dart';
