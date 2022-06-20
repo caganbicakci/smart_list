@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
-import 'package:smart_list/screens/auth/login_page.dart';
 import '../../bloc/cart_bloc/cart_bloc.dart';
 import '../../constants/strings.dart';
 import '../about_us_page.dart';
@@ -13,14 +12,14 @@ import '../previous_purchase_page.dart';
 
 import '../../constants/theme_constants.dart';
 
-class MainNavBar extends StatefulWidget {
-  const MainNavBar({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _MainNavBarState();
+  State<StatefulWidget> createState() => _MainScreenState();
 }
 
-class _MainNavBarState extends State {
+class _MainScreenState extends State {
   var padding = const EdgeInsets.symmetric(horizontal: 18, vertical: 5);
   double gap = 10;
   int _selectedIndex = 0;
@@ -47,6 +46,12 @@ class _MainNavBarState extends State {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   var fabColor;
+
+  @override
+  void initState() {
+    context.read<CartBloc>().add(const CartLoadEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

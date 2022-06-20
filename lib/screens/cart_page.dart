@@ -19,12 +19,6 @@ class MyCart extends StatefulWidget {
 }
 
 class _MyCartState extends State<MyCart> {
-  // @override
-  // void initState() {
-  //   context.read<CartBloc>().add(const CartLoadEvent());
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +102,7 @@ class _MyCartState extends State<MyCart> {
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 trailing: Text(
-                                  "${widget.products[index].price.toStringAsFixed(2)} TL",
+                                  "${widget.products[index].price.toStringAsFixed(2)} $TL_CURRENCY",
                                 )),
                           ),
                         ),
@@ -120,7 +114,7 @@ class _MyCartState extends State<MyCart> {
               }
               if (state is CartErrorState) {
                 return const Center(
-                  child: Text("Something went wrong!"),
+                  child: Text(SOMETHING_WENT_WRONG),
                 );
               }
               return Container();
@@ -246,7 +240,9 @@ snackbar(String message) {
     backgroundColor: ThemeConstants.themeColor,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+      topLeft: Radius.circular(15),
+      topRight: Radius.circular(15),
+    )),
   );
 }
 

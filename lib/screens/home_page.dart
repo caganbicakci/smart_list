@@ -19,19 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.all(10.0),
-      child: BlocConsumer<ProductBloc, ProductState>(
-        listener: (context, state) {
-          context.read<CartBloc>().add(const CartLoadEvent());
-        },
+      child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is ProductInitial) {
             context.read<ProductBloc>().add(ProductLoadEvent());
