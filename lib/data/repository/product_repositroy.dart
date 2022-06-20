@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:smart_list/models/category.dart';
+import '../../models/category.dart';
 
 import '../../models/product.dart';
 import 'dart:convert';

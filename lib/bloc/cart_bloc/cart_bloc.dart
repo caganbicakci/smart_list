@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:smart_list/data/repository/cart_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../data/repository/cart_repository.dart';
 
 import '../../models/predicted_product.dart';
 
@@ -14,7 +15,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc(this.cartRepo) : super(CartLoadingState()) {
     on<CartLoadEvent>((event, emit) async {
       emit(CartLoadingState());
-      cartItems = await cartRepo.getPredictedProducts(event.userId);
+      cartItems = await cartRepo.getCartItems();
       if (cartItems != null) {
         emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
       } else {
@@ -48,5 +49,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       totalCost += item.price;
     }
     return totalCost;
+  }
+
+  String getCurrentUserEmail() {
+    return FirebaseAuth.instance.currentUser!.email!;
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_list/bloc/cart_bloc/cart_bloc.dart';
+import 'package:smart_list/constants/strings.dart';
+import '../bloc/cart_bloc/cart_bloc.dart';
 
-import 'package:smart_list/widgets/product_list_widget.dart';
+import '../widgets/product_list_widget.dart';
 
 import '../bloc/product_bloc/product_bloc.dart';
 import '../models/category.dart';
@@ -18,20 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.all(10.0),
-      child: BlocConsumer<ProductBloc, ProductState>(
-        listener: (context, state) {
-          context.read<CartBloc>().add(const CartLoadEvent(
-              userId: "user_e4cfcc06-799d-40b2-9587-faa832e3b28d"));
-        },
+      child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is ProductInitial) {
             context.read<ProductBloc>().add(ProductLoadEvent());
@@ -54,7 +46,7 @@ class _HomePageState extends State {
             );
           }
           if (state is ProductErrorState) {
-            return const Center(child: Text('Something went wrong!'));
+            return const Center(child: Text(SOMETHING_WENT_WRONG));
           }
           return Container();
         },
