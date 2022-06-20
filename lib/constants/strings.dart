@@ -26,6 +26,7 @@ const String SIGN_UP_BTN_TEXT = "SIGN UP";
 
 const String PSW_RESET_HINT = 'Enter an e-mail to reset password';
 const String PSW_RESET_BTN_TEXT = 'SEND RESET EMAIL';
+const String PSW_RESET_SUCCESS = 'Password reset e-mail sended!';
 
 const String PASSWORDS_MISSMATCH = 'Passwords do not match';
 

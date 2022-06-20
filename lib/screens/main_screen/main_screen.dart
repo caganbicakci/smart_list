@@ -47,11 +47,11 @@ class _MainScreenState extends State {
 
   var fabColor;
 
-  @override
-  void initState() {
-    context.read<CartBloc>().add(const CartLoadEvent());
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   context.read<CartBloc>().add(const CartLoadEvent());
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

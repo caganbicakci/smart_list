@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_list/bloc/auth_bloc/auth_bloc.dart';
 import '../../constants/asset_constants.dart';
 import '../../constants/strings.dart';
 import 'package:toast/toast.dart';
@@ -17,9 +18,9 @@ class PasswordResetPage extends StatefulWidget {
 }
 
 class _PasswordResetPageState extends State {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  // FirebaseAuth auth = FirebaseAuth.instance;
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,6 +28,12 @@ class _PasswordResetPageState extends State {
         const LoginPageBg(),
         SafeArea(
           child: Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backwardsCompatibility: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
             backgroundColor: Colors.transparent,
             body: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -34,31 +41,20 @@ class _PasswordResetPageState extends State {
                 horizontal: 40,
                 vertical: 60,
               ),
-              child: Stack(children: [
-                GestureDetector(
-                  child: const Icon(
-                    Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    SMART_LIST_LOGO,
+                    height: 125,
+                    width: 125,
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      SMART_LIST_LOGO,
-                      height: 125,
-                      width: 125,
-                    ),
-                    const SizedBox(height: 60),
-                    buildUsernameField(),
-                    const SizedBox(height: 20),
-                    buildResetPasswordButton(context),
-                  ],
-                ),
-              ]),
+                  const SizedBox(height: 60),
+                  buildUsernameField(),
+                  const SizedBox(height: 20),
+                  buildResetPasswordButton(context),
+                ],
+              ),
             ),
           ),
         )
@@ -72,7 +68,7 @@ class _PasswordResetPageState extends State {
       alignment: Alignment.centerLeft,
       height: 55,
       child: TextField(
-          controller: usernameController,
+          controller: emailController,
           style: Theme.of(context)
               .textTheme
               .bodyText2!
@@ -109,8 +105,10 @@ class _PasswordResetPageState extends State {
                 color: Colors.black54, letterSpacing: 1, fontSize: 15),
           ),
           onPressed: () async {
-            auth.sendPasswordResetEmail(email: usernameController.text);
-            Toast.show("Pasword reset e-mail sended!",
+            BlocProvider.of<AuthBloc>(context, listen: false)
+                .add(PasswordResetEvent(email: emailController.text));
+            // auth.sendPasswordResetEmail(email: emailController.text);
+            Toast.show(PSW_RESET_SUCCESS,
                 webTexColor: Colors.black,
                 backgroundColor: Colors.white70,
                 gravity: 1,
