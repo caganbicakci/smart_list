@@ -2,15 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/repository/cart_repository.dart';
-
-import '../../models/predicted_product.dart';
+import '../../models/product.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartRepository cartRepo;
-  late List<PredictedProduct>? cartItems;
+  late List<Product>? cartItems;
 
   CartBloc(this.cartRepo) : super(CartLoadingState()) {
     on<CartLoadEvent>((event, emit) async {
@@ -38,6 +37,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     on<ClearCartEvent>((event, emit) {
       emit(CartLoadingState());
+      cartItems!.clear();
+      //emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
+      emit(CartEmptyState());
+    });
+
+    on<PurchaseEvent>((event, emit) async {
+      List<Map> productMapList = [];
+      for (var product in event.purchasedProducts) {
+        productMapList.add(product.toJson());
+      }
+
+      await cartRepo.submitPurchase(
+          date: event.purchaseDate,
+          cost: event.totalCost,
+          products: productMapList);
+
       cartItems!.clear();
       emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
     });

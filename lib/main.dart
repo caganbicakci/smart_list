@@ -1,9 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/auth_bloc/auth_bloc.dart';
+
+import 'bloc/order_bloc/order_bloc.dart';
 import 'bloc/product_bloc/product_bloc.dart';
 import 'constants/strings.dart';
+import 'data/repository/order_repository.dart';
 import 'data/repository/product_repositroy.dart';
 import 'router/app_router.dart';
 import 'bloc/cart_bloc/cart_bloc.dart';
@@ -40,6 +42,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => AuthBloc(AuthService()),
+        ),
+        BlocProvider(
+          create: (context) => OrderBloc(OrderRepository()),
         ),
       ],
       child: MaterialApp(

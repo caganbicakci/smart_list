@@ -2,16 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:smart_list/constants/asset_constants.dart';
 import 'package:smart_list/constants/strings.dart';
+import 'package:smart_list/widgets/custom_button.dart';
 import '../constants/theme_constants.dart';
-import '../models/predicted_product.dart';
 
 import '../bloc/cart_bloc/cart_bloc.dart';
+import '../models/product.dart';
 
 class MyCart extends StatefulWidget {
   MyCart({Key? key}) : super(key: key);
 
-  List<PredictedProduct> products = [];
+  List<Product> products = [];
   double totalCost = 0.0;
 
   @override
@@ -117,6 +120,26 @@ class _MyCartState extends State<MyCart> {
                   child: Text(SOMETHING_WENT_WRONG),
                 );
               }
+
+              if (state is CartEmptyState) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: Lottie.asset(EMPTY_CART_ANIMATION,
+                              repeat: false)),
+                      CustomButton(
+                          title: BACK_BTN_TEXT,
+                          function: () {
+                            Navigator.pop(context);
+                          })
+                    ],
+                  ),
+                );
+              }
               return Container();
             },
           ),
@@ -124,7 +147,8 @@ class _MyCartState extends State<MyCart> {
   }
 }
 
-Widget purchasedArea(BuildContext context, List products, double totalCost) {
+Widget purchasedArea(
+    BuildContext context, List<Product> products, double totalCost) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Row(
@@ -167,7 +191,7 @@ buildClearList(BuildContext context) {
   return MaterialButton(
       height: 60,
       onPressed: () {
-        // showProductRemoveAlert(context, cart);
+        showProductRemoveAlert(context);
       },
       color: Colors.redAccent,
       textColor: Colors.white10,
@@ -180,7 +204,7 @@ buildClearList(BuildContext context) {
       ));
 }
 
-buildPurchase(BuildContext context, List products, double totalCost) {
+buildPurchase(BuildContext context, List<Product> products, double totalCost) {
   return MaterialButton(
       height: 60,
       onPressed: () async {
@@ -218,7 +242,7 @@ void showProductRemoveAlert(BuildContext context) {
             TextButton(
               child: const Text(YES),
               onPressed: () {
-                context.watch<CartBloc>().add(const ClearCartEvent());
+                context.read<CartBloc>().add(const ClearCartEvent());
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context)
                     .showSnackBar(snackbar(PRODUCTS_REMOVED));
@@ -237,17 +261,16 @@ snackbar(String message) {
     duration: const Duration(milliseconds: 1500),
     content: Align(
         alignment: Alignment.center, heightFactor: 1, child: Text(message)),
-    backgroundColor: ThemeConstants.themeColor,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(15),
-      topRight: Radius.circular(15),
+      topLeft: Radius.circular(5),
+      topRight: Radius.circular(5),
     )),
   );
 }
 
 Widget savePurchaseAlert(
-    BuildContext context, List products, double totalCost) {
+    BuildContext context, List<Product> products, double totalCost) {
   var _date = DateTime.now();
   return AlertDialog(
     contentPadding: EdgeInsets.zero,
@@ -280,6 +303,7 @@ Widget savePurchaseAlert(
                     child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.date,
                       initialDateTime: DateTime.now(),
+                      maximumYear: DateTime.now().year,
                       onDateTimeChanged: (DateTime newDateTime) {
                         _date = newDateTime;
                       },
@@ -306,7 +330,12 @@ Widget savePurchaseAlert(
                       color: Colors.white,
                     ),
               ),
-              onPressed: () async {
+              onPressed: () {
+                context.read<CartBloc>().add(PurchaseEvent(
+                    purchasedProducts: products,
+                    purchaseDate: _date,
+                    totalCost: totalCost));
+                context.read<CartBloc>().add(const ClearCartEvent());
                 Navigator.pop(context);
               },
             ),

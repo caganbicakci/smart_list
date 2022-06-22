@@ -230,12 +230,12 @@ class _LoginPageState extends State {
             },
           ),
           onPressed: () async {
-            BlocProvider.of<AuthBloc>(context).add(
-              LoginEvent(
-                email: emailController.text,
-                password: passwordController.text,
-              ),
-            );
+            context.read<AuthBloc>().add(
+                  LoginEvent(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  ),
+                );
           },
         ),
       ),
