@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_list/bloc/cart_bloc/cart_bloc.dart';
 import '../constants/theme_constants.dart';
 import '../models/product.dart';
 
@@ -45,6 +47,9 @@ class ProductCard extends StatelessWidget {
             top: 0,
             child: Center(
               child: InkWell(
+                onTap: () {
+                  context.read<CartBloc>().add(AddToCart(product: product));
+                },
                 borderRadius: BorderRadius.circular(15),
                 child: Container(
                   decoration: BoxDecoration(

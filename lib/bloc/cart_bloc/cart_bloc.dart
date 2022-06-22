@@ -4,13 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/repository/cart_repository.dart';
 
 import '../../models/predicted_product.dart';
+import '../../models/product.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartRepository cartRepo;
-  late List<PredictedProduct>? cartItems;
+  late List<Product>? cartItems;
 
   CartBloc(this.cartRepo) : super(CartLoadingState()) {
     on<CartLoadEvent>((event, emit) async {

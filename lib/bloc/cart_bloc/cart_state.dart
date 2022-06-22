@@ -9,7 +9,7 @@ abstract class CartState extends Equatable {
 class CartLoadingState extends CartState {}
 
 class CartLoadedState extends CartState {
-  final List<PredictedProduct> cartItems;
+  final List<Product> cartItems;
   final double totalCost;
   const CartLoadedState({required this.cartItems, required this.totalCost});
 

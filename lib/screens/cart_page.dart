@@ -7,11 +7,12 @@ import '../constants/theme_constants.dart';
 import '../models/predicted_product.dart';
 
 import '../bloc/cart_bloc/cart_bloc.dart';
+import '../models/product.dart';
 
 class MyCart extends StatefulWidget {
   MyCart({Key? key}) : super(key: key);
 
-  List<PredictedProduct> products = [];
+  List<Product> products = [];
   double totalCost = 0.0;
 
   @override

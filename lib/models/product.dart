@@ -22,17 +22,17 @@ class Product {
   num price;
   String productId;
   String productName;
-  double quantity;
+  int quantity;
   String quantityPerUnit;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        categoryId: json["categoryId"],
-        imageUrl: json["imageUrl"],
+        categoryId: json["categoryId"] ?? 0,
+        imageUrl: json["imageUrl"] ?? "",
         price: DataTypeHandler.checkDouble(json["price"].toString()),
         productId: json["productId"],
         productName: json["productName"],
-        quantity: DataTypeHandler.checkDouble(json["quantity"].toString()),
-        quantityPerUnit: json["quantityPerUnit"],
+        quantity: json["quantity"],
+        quantityPerUnit: json["quantityPerUnit"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

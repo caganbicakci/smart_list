@@ -5,12 +5,12 @@ abstract class CartEvent {
 }
 
 class AddToCart extends CartEvent {
-  final PredictedProduct product;
+  final Product product;
   const AddToCart({required this.product});
 }
 
 class RemoveFromCart extends CartEvent {
-  final PredictedProduct product;
+  final Product product;
   const RemoveFromCart({required this.product});
 }
 
