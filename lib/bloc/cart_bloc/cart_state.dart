@@ -18,3 +18,5 @@ class CartLoadedState extends CartState {
 }
 
 class CartErrorState extends CartState {}
+
+class CartEmptyState extends CartState {}

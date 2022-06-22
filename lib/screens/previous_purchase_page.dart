@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../models/previous_purchased_products.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_list/models/order.dart';
+
+import '../bloc/order_bloc/order_bloc.dart';
 
 class PreviousPurchasePage extends StatefulWidget {
   const PreviousPurchasePage({Key? key}) : super(key: key);
@@ -37,28 +40,13 @@ class _PreviousPurchasedProductsCart extends StatefulWidget {
 class __PreviousPurchasedProductsCart extends State {
   FirebaseAuth auth = FirebaseAuth.instance;
   late User user;
-  List<PreviousPurchasedProduct> purchasedProducts = [];
+  List<Order> purchasedProducts = [];
 
   @override
   void initState() {
-    // getPurchasedProducts();
-    // getNoPurchaseText();
+    context.read<OrderBloc>().add(LoadOrdersEvent());
     super.initState();
   }
-
-  // late String data;
-  // Future getData() async {
-  //   return "You haven't added any purchases yet.";
-  // }
-
-  // getNoPurchaseText() async {
-  //   await Future.delayed(Duration(seconds: 1));
-  //   getData().then((value) => {
-  //         setState(() {
-  //           data = value;
-  //         })
-  //       });
-  // }
 
   @override
   Widget build(BuildContext context) {

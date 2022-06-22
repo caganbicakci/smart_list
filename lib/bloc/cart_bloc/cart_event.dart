@@ -15,7 +15,7 @@ class RemoveFromCart extends CartEvent {
 }
 
 class CartLoadEvent extends CartEvent {
-  const CartLoadEvent();
+  CartLoadEvent();
 }
 
 class CartUpdatedEvent extends CartEvent {
@@ -25,4 +25,14 @@ class CartUpdatedEvent extends CartEvent {
 
 class ClearCartEvent extends CartEvent {
   const ClearCartEvent();
+}
+
+class PurchaseEvent extends CartEvent {
+  final List<Product> purchasedProducts;
+  final DateTime purchaseDate;
+  final double totalCost;
+  const PurchaseEvent(
+      {required this.purchasedProducts,
+      required this.purchaseDate,
+      required this.totalCost});
 }

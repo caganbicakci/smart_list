@@ -12,23 +12,47 @@ class CartRepository {
 
   Future<List<Product>?> getCartItems() async {
     List<Product> cartItems = [];
-    predictionsRef
-        .child(await getPredictionIdForCurrentUser())
-        .onValue
-        .listen((event) {
-      List<dynamic> data = jsonDecode(jsonEncode(event.snapshot.value));
-      for (var item in data) {
-        cartItems.add(Product.fromJson(item));
-      }
-    });
-    return cartItems;
+    try {
+      predictionsRef
+          .child(await getPredictionIdForCurrentUser())
+          .onValue
+          .listen((event) {
+        List<dynamic> data = jsonDecode(jsonEncode(event.snapshot.value));
+        for (var item in data) {
+          cartItems.add(Product.fromJson(item));
+        }
+      });
+      return cartItems;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> submitPurchase(
+      {required DateTime date,
+      required double cost,
+      required List<Map> products}) async {
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      firestoreRef
+          .collection("orders")
+          .doc(user!.email)
+          .collection("pastPurchases")
+          .add({'date': date, 'cost': cost, 'products': products});
+    } catch (e) {
+      print(e);
+    }
   }
 
   getPredictionIdForCurrentUser() async {
-    var user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      var data = await firestoreRef.collection('users').doc(user.email).get();
-      return data['userID'].toString();
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        var data = await firestoreRef.collection('users').doc(user.email).get();
+        return data['userID'].toString();
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

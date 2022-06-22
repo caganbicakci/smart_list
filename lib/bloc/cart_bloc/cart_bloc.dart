@@ -38,6 +38,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<ClearCartEvent>((event, emit) {
       emit(CartLoadingState());
       cartItems!.clear();
+      //emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
+      emit(CartEmptyState());
+    });
+
+    on<PurchaseEvent>((event, emit) async {
+      List<Map> productMapList = [];
+      for (var product in event.purchasedProducts) {
+        productMapList.add(product.toJson());
+      }
+
+      await cartRepo.submitPurchase(
+          date: event.purchaseDate,
+          cost: event.totalCost,
+          products: productMapList);
+
+      cartItems!.clear();
       emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
     });
   }
