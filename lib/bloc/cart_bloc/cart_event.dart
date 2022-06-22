@@ -19,7 +19,7 @@ class CartLoadEvent extends CartEvent {
 }
 
 class CartUpdatedEvent extends CartEvent {
-  final List<PredictedProduct> products;
+  final List<Product> products;
   const CartUpdatedEvent({required this.products});
 }
 

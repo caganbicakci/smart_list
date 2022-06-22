@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_list/constants/strings.dart';
 import '../constants/theme_constants.dart';
-import '../models/predicted_product.dart';
 
 import '../bloc/cart_bloc/cart_bloc.dart';
 import '../models/product.dart';
