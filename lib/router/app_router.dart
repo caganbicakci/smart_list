@@ -5,22 +5,22 @@ import '../screens/main_screen/main_screen.dart';
 
 import '../screens/auth/login_page.dart';
 import '../screens/auth/sign_up_page.dart';
-import '../screens/previous_purchase_page.dart';
+import '../screens/previous_orders_page.dart';
 
 class AppRouter {
   MaterialPageRoute? onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => const MainScreen(),
+          builder: (_) => MainScreen(),
         );
       case '/login_page':
         return MaterialPageRoute(
-          builder: (_) => const LoginPage(),
+          builder: (_) => LoginPage(),
         );
       case '/sign_up_page':
         return MaterialPageRoute(
-          builder: (_) => const SignUpPage(),
+          builder: (_) => SignUpPage(),
         );
       case '/cart':
         return MaterialPageRoute(
@@ -28,11 +28,11 @@ class AppRouter {
         );
       case '/previous_purchase_page':
         return MaterialPageRoute(
-          builder: (_) => const PreviousPurchasePage(),
+          builder: (_) => PreviousOrdersPage(),
         );
       case '/password_reset_page':
         return MaterialPageRoute(
-          builder: (_) => const PasswordResetPage(),
+          builder: (_) => PasswordResetPage(),
         );
       default:
         return null;

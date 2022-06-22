@@ -13,6 +13,7 @@ class OrderRepository {
           .collection("orders")
           .doc(user.email)
           .collection("pastPurchases")
+          .orderBy("date", descending: true)
           .get();
 
       for (var record in querySnapshot.docs) {

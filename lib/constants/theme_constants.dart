@@ -14,3 +14,7 @@ final kBoxDecorationStyle = BoxDecoration(
     ),
   ],
 );
+
+const bgDecorationStyle = BoxDecoration(
+    image: DecorationImage(
+        image: AssetImage('assets/images/bg1.jpg'), fit: BoxFit.cover));

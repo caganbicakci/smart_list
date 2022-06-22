@@ -18,7 +18,7 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(
                 color: Colors.black54,
                 letterSpacing: 1,
                 fontSize: 15,

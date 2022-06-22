@@ -7,7 +7,7 @@ import '../../bloc/cart_bloc/cart_bloc.dart';
 import '../../constants/strings.dart';
 import '../about_us_page.dart';
 import '../home_page.dart';
-import '../previous_purchase_page.dart';
+import '../previous_orders_page.dart';
 
 import '../../constants/theme_constants.dart';
 
@@ -24,9 +24,9 @@ class _MainScreenState extends State {
   int _selectedIndex = 0;
 
   final List<Widget> pageList = [
-    const HomePage(),
-    const PreviousPurchasePage(),
-    const AboutUsPage()
+    HomePage(),
+    PreviousOrdersPage(),
+    AboutUsPage()
   ];
 
   List<Color> colors = [

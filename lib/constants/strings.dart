@@ -43,3 +43,6 @@ const String TOTAL_COST = 'Total Cost';
 const String TL_CURRENCY = 'TL';
 
 const String BACK_BTN_TEXT = 'BACK TO SHOPPING';
+const String SHOW_GRAPHS = 'SHOW GRAPHS';
+
+const String CART_IS_EMPTY = 'Cart is Empty!';

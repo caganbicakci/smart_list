@@ -38,7 +38,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<ClearCartEvent>((event, emit) {
       emit(CartLoadingState());
       cartItems!.clear();
-      //emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
       emit(CartEmptyState());
     });
 
@@ -54,7 +53,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           products: productMapList);
 
       cartItems!.clear();
-      emit(CartLoadedState(cartItems: cartItems!, totalCost: getTotalCost()));
+      emit(CartEmptyState());
     });
   }
 
