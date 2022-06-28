@@ -43,11 +43,13 @@ class _MyCartState extends State<MyCart> {
         ),
         body: Container(
           constraints: const BoxConstraints.expand(),
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/bg1.jpg'),
-                  fit: BoxFit.cover)),
-          child: BlocBuilder<CartBloc, CartState>(
+          decoration: bgDecorationStyle,
+          child: BlocConsumer<CartBloc, CartState>(
+            listener: ((context, state) {
+              if (widget.products.isEmpty) {
+                context.read<CartBloc>().emit(CartEmptyState());
+              }
+            }),
             builder: (context, state) {
               if (state is CartLoadingState) {
                 return const Center(child: CircularProgressIndicator());
@@ -131,6 +133,13 @@ class _MyCartState extends State<MyCart> {
                           width: 200,
                           child: Lottie.asset(EMPTY_CART_ANIMATION,
                               repeat: false)),
+                      Text(
+                        CART_IS_EMPTY,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontSize: 20, color: Colors.white),
+                      ),
                       CustomButton(
                           title: BACK_BTN_TEXT,
                           function: () {
@@ -139,8 +148,9 @@ class _MyCartState extends State<MyCart> {
                     ],
                   ),
                 );
+              } else {
+                return Container();
               }
-              return Container();
             },
           ),
         ));

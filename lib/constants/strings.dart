@@ -3,7 +3,7 @@
 const String APP_TITLE = 'Smart List';
 
 const String HOME = 'Home';
-const String PAST_PURCHASES = 'Past Purchases';
+const String PREVIOUS_ORDERS = 'Previous Orders';
 const String ABOUT_US = 'About Us';
 
 const String ATTENTION = 'Attention!';
@@ -40,6 +40,14 @@ const String SAVE = 'Save';
 const String CANCEL = 'Cancel';
 
 const String TOTAL_COST = 'Total Cost';
-const String TL_CURRENCY = 'TL';
+const String TL_CURRENCY = '₺';
 
 const String BACK_BTN_TEXT = 'BACK TO SHOPPING';
+const String SHOW_GRAPHS = 'SHOW GRAPHS';
+
+const String CART_IS_EMPTY = 'Cart is Empty!';
+
+const String TL_SYMBOL = '₺';
+const String TR = 'tr';
+
+const String MONTHLY_EXPENSES = 'Monthly Expenses';

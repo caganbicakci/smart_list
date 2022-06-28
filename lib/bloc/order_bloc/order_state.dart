@@ -10,5 +10,8 @@ class OrderLoading extends OrderState {}
 
 class OrderLoaded extends OrderState {
   final List<Order> orders;
-  const OrderLoaded({required this.orders});
+  final List<OrderData> orderDataList;
+  const OrderLoaded({required this.orders, required this.orderDataList});
 }
+
+class OrderError extends OrderState {}
