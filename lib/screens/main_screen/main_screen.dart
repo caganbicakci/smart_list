@@ -37,7 +37,7 @@ class _MainScreenState extends State {
 
   List<Text> texts = const [
     Text(HOME),
-    Text(PAST_PURCHASES),
+    Text(PREVIOUS_ORDERS),
     Text(ABOUT_US),
   ];
 
@@ -109,7 +109,7 @@ class _MainScreenState extends State {
               duration: const Duration(milliseconds: 500),
               tabs: [
                 buildGButton(HOME, LineIcons.home, Colors.deepPurple),
-                buildGButton(PAST_PURCHASES, LineIcons.heart, Colors.teal),
+                buildGButton(PREVIOUS_ORDERS, LineIcons.heart, Colors.teal),
                 buildGButton(ABOUT_US, LineIcons.infoCircle, Colors.pink),
               ],
               selectedIndex: _selectedIndex,

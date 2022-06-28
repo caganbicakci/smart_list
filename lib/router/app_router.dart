@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_list/screens/stats_page.dart';
 import '../screens/auth/password_reset_page.dart';
 import '../screens/cart_page.dart';
 import '../screens/main_screen/main_screen.dart';
@@ -33,6 +34,10 @@ class AppRouter {
       case '/password_reset_page':
         return MaterialPageRoute(
           builder: (_) => PasswordResetPage(),
+        );
+      case '/stats_page':
+        return MaterialPageRoute(
+          builder: (_) => StatsPage(),
         );
       default:
         return null;

@@ -6,6 +6,7 @@ import 'package:smart_list/bloc/order_bloc/order_bloc.dart';
 import 'package:smart_list/constants/strings.dart';
 import 'package:smart_list/constants/theme_constants.dart';
 import 'package:smart_list/models/order.dart';
+import 'package:smart_list/screens/stats_page.dart';
 import 'package:smart_list/widgets/custom_button.dart';
 
 import '../models/product.dart';
@@ -67,10 +68,8 @@ class _PreviousOrdersPage extends State<PreviousOrdersPage> {
                                       Expanded(
                                           child: Align(
                                               alignment: Alignment.centerRight,
-                                              child: Text(widget
-                                                      .orders[index].cost
-                                                      .toStringAsFixed(2) +
-                                                  TL_CURRENCY)))
+                                              child: Text(
+                                                  "${widget.orders[index].cost.toStringAsFixed(2)} $TL_CURRENCY")))
                                     ],
                                   ),
                                   children: [
