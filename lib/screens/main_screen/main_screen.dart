@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -8,7 +7,7 @@ import '../../bloc/cart_bloc/cart_bloc.dart';
 import '../../constants/strings.dart';
 import '../about_us_page.dart';
 import '../home_page.dart';
-import '../previous_purchase_page.dart';
+import '../previous_orders_page.dart';
 
 import '../../constants/theme_constants.dart';
 
@@ -25,9 +24,9 @@ class _MainScreenState extends State {
   int _selectedIndex = 0;
 
   final List<Widget> pageList = [
-    const HomePage(),
-    const PreviousPurchasePage(),
-    const AboutUsPage()
+    HomePage(),
+    PreviousOrdersPage(),
+    AboutUsPage()
   ];
 
   List<Color> colors = [
@@ -38,18 +37,17 @@ class _MainScreenState extends State {
 
   List<Text> texts = const [
     Text(HOME),
-    Text(PAST_PURCHASES),
+    Text(PREVIOUS_ORDERS),
     Text(ABOUT_US),
   ];
 
   PageController controller = PageController();
-  FirebaseAuth auth = FirebaseAuth.instance;
 
   var fabColor;
 
   @override
   void initState() {
-    context.read<CartBloc>().add(const CartLoadEvent());
+    context.read<CartBloc>().add(CartLoadEvent());
     super.initState();
   }
 
@@ -111,7 +109,7 @@ class _MainScreenState extends State {
               duration: const Duration(milliseconds: 500),
               tabs: [
                 buildGButton(HOME, LineIcons.home, Colors.deepPurple),
-                buildGButton(PAST_PURCHASES, LineIcons.heart, Colors.teal),
+                buildGButton(PREVIOUS_ORDERS, LineIcons.heart, Colors.teal),
                 buildGButton(ABOUT_US, LineIcons.infoCircle, Colors.pink),
               ],
               selectedIndex: _selectedIndex,

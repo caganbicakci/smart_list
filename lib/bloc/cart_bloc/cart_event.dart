@@ -5,24 +5,34 @@ abstract class CartEvent {
 }
 
 class AddToCart extends CartEvent {
-  final PredictedProduct product;
+  final Product product;
   const AddToCart({required this.product});
 }
 
 class RemoveFromCart extends CartEvent {
-  final PredictedProduct product;
+  final Product product;
   const RemoveFromCart({required this.product});
 }
 
 class CartLoadEvent extends CartEvent {
-  const CartLoadEvent();
+  CartLoadEvent();
 }
 
 class CartUpdatedEvent extends CartEvent {
-  final List<PredictedProduct> products;
+  final List<Product> products;
   const CartUpdatedEvent({required this.products});
 }
 
 class ClearCartEvent extends CartEvent {
   const ClearCartEvent();
+}
+
+class PurchaseEvent extends CartEvent {
+  final List<Product> purchasedProducts;
+  final DateTime purchaseDate;
+  final double totalCost;
+  const PurchaseEvent(
+      {required this.purchasedProducts,
+      required this.purchaseDate,
+      required this.totalCost});
 }
